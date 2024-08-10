@@ -1,0 +1,1 @@
+ALTER TABLE "blinksights_blink_event" DROP CONSTRAINT "blinksights_blink_event__blink_id_blinksights_blink__id_fk";

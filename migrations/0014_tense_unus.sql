@@ -1,0 +1,1 @@
+ALTER TABLE "blinksights_organization" DROP COLUMN IF EXISTS "_id";

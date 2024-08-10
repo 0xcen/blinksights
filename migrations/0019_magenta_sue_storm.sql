@@ -1,0 +1,2 @@
+ALTER TABLE "blinksights_blink_event" ADD COLUMN "id" uuid DEFAULT gen_random_uuid() NOT NULL;--> statement-breakpoint
+ALTER TABLE "blinksights_blink" ADD COLUMN "id" uuid DEFAULT gen_random_uuid() NOT NULL;

@@ -8,6 +8,8 @@ import {
   text,
   timestamp,
   varchar,
+  jsonb,
+  uuid
 } from "drizzle-orm/pg-core";
 import { type AdapterAccount } from "next-auth/adapters";
 
@@ -19,26 +21,44 @@ import { type AdapterAccount } from "next-auth/adapters";
  */
 export const createTable = pgTableCreator((name) => `blinksights_${name}`);
 
+export const organizations = createTable(
+  "organization",
+  {
+    id: uuid("id").primaryKey().default(sql`gen_random_uuid()`),
+    name: varchar("name", { length: 255 }),
+    apiKey: varchar("api_key", { length: 255 }),
+    subscription: varchar("subscription", { length: 255 }),
+    subscriptionStartDate: timestamp("subscription_start_date", { withTimezone: true }),
+    subscriptionEndDate: timestamp("subscription_end_date", { withTimezone: true }),
+    email: varchar("email", {length: 255}).notNull()
+  }
+)
+
+export const blinkEvents = createTable(
+  "blink_event",
+  {
+    id: uuid("id").primaryKey().default(sql`gen_random_uuid()`),
+    blinkId: uuid("blink_id").notNull().references(() => blinks.id, { onDelete: 'cascade' }),
+    orgId: uuid("org_id").notNull().references(() => organizations.id, { onDelete: 'cascade' }),
+    eventType: jsonb("event_type").notNull(),
+    path: varchar("path", { length: 255 }),
+    userPubKey: varchar("user_pub_key", { length: 255 }).notNull(),
+    timestamp: timestamp("created_at", { withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull()
+  }
+)
+
 export const blinks = createTable(
   "blink",
   {
-    id: serial("id").primaryKey(),
-    name: varchar("name", { length: 256 }),
-    createdById: varchar("created_by", { length: 255 })
-      .notNull()
-      .references(() => users.id),
+    id: uuid("id").primaryKey().default(sql`gen_random_uuid()`),
+    orgId: uuid("org_id").notNull().references(() => organizations.id, { onDelete: 'cascade' }),
+    actions: jsonb("actions"),
     createdAt: timestamp("created_at", { withTimezone: true })
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
-    updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
-      () => new Date(),
-    ),
-    description: text("description"),
   },
-  (example) => ({
-    createdByIdIdx: index("created_by_idx").on(example.createdById),
-    nameIndex: index("name_idx").on(example.name),
-  }),
 );
 
 export const users = createTable("user", {
