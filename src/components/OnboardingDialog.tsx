@@ -1,28 +1,37 @@
 "use client";
+import { useSession } from "next-auth/react";
 import { useState } from "react";
-import { signIn } from "next-auth/react";
 
-import { Button } from "~/components/ui/button";
-import { Input } from "~/components/ui/input";
+import { Label } from "@radix-ui/react-label";
 import {
   AlertDialog,
   AlertDialogContent,
   AlertDialogDescription,
+  AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogFooter,
 } from "~/components/ui/alert-dialog";
+import { Button } from "~/components/ui/button";
+import { Input } from "~/components/ui/input";
+import useOrganizationMutations from "../hooks/useOrganizationMutations";
 
 interface Props {
   open: boolean;
 }
 
 const OnboardingDialog = ({ open }: Props) => {
-  const [storeName, setStoreName] = useState("");
-  const 
+  const [orgName, setOrgName] = useState("");
+  const [email, setEmail] = useState("");
+  const { update } = useSession();
 
-  const handleSave = () => {
-    console.log("Store name saved:", storeName);
+  const { createOrg } = useOrganizationMutations();
+
+  const handleSave = async () => {
+    await createOrg.mutateAsync({
+      name: orgName,
+      email,
+    });
+    await update();
   };
 
   return (
@@ -35,17 +44,35 @@ const OnboardingDialog = ({ open }: Props) => {
           </AlertDialogDescription>
         </AlertDialogHeader>
         <div className="py-4">
-          <form onSubmit={(e) => e.preventDefault()}>
-            <Input
-              placeholder="Organization Name"
-              required
-              value={storeName}
-              onChange={(e) => setStoreName(e.target.value)}
-            />
+          <form onSubmit={(e) => e.preventDefault()} className="space-y-4">
+            <div className="grid gap-2">
+              <Label htmlFor="orgName">Organization Name</Label>
+              <Input
+                id="orgName"
+                placeholder="Acme Corp"
+                required
+                value={orgName}
+                onChange={(e) => setOrgName(e.target.value)}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="email">Contact Email</Label>
+              <Input
+                id="email"
+                placeholder="john@acme.com"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>
           </form>
         </div>
         <AlertDialogFooter className="flex flex-col gap-4">
-          <Button onClick={() => handleSave()} className="w-full">
+          <Button
+            loading={createOrg.isPending}
+            onClick={() => handleSave()}
+            className="w-full"
+          >
             Create
           </Button>
         </AlertDialogFooter>

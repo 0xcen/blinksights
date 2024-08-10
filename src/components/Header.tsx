@@ -12,15 +12,15 @@ import {
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
 import MobileNav from "~/components/MobileNav";
-import { signOut, useSession } from "next-auth/react";
+import { getSession, signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import LoginDialog from "./LoginDialog";
 import OnboardingDialog from "./OnboardingDialog";
+import { useEffect } from "react";
 
 export default function Header() {
   const router = useRouter();
-  const { data: session } = useSession();
-  console.log("🚀 ~ Header ~ session:", session);
+  const { data: session, status } = useSession();
 
   return (
     <header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6">
@@ -81,8 +81,8 @@ export default function Header() {
           </DropdownMenuContent>
         )}
       </DropdownMenu>
-      <LoginDialog open={!session?.user} />
-      <OnboardingDialog open={true} />
+      <LoginDialog open={!session?.user && status === "unauthenticated"} />
+      <OnboardingDialog open={!!session?.user && !session?.user?.orgId} />
     </header>
   );
 }
