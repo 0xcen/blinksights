@@ -8,9 +8,9 @@ import {
   CardHeader,
   CardTitle,
 } from "~/components/ui/card";
-import { Table } from "../../components/Table";
+import { Table } from "~/components/Table";
 import { columns } from "./columns";
-import useBlinks from "../../hooks/useBlinks";
+import useBlinks from "~/hooks/useBlinks";
 
 export interface Blink {
   id: string;

@@ -9,7 +9,7 @@ import {
   timestamp,
   varchar,
   jsonb,
-  uuid
+  uuid,
 } from "drizzle-orm/pg-core";
 import { type AdapterAccount } from "next-auth/adapters";
 
@@ -21,131 +21,105 @@ import { type AdapterAccount } from "next-auth/adapters";
  */
 export const createTable = pgTableCreator((name) => `blinksights_${name}`);
 
-export const organizations = createTable(
-  "organization",
-  {
-    id: uuid("id").primaryKey().default(sql`gen_random_uuid()`),
-    name: varchar("name", { length: 255 }),
-    apiKey: varchar("api_key", { length: 255 }),
-    subscription: varchar("subscription", { length: 255 }),
-    subscriptionStartDate: timestamp("subscription_start_date", { withTimezone: true }),
-    subscriptionEndDate: timestamp("subscription_end_date", { withTimezone: true }),
-    email: varchar("email", {length: 255}).notNull()
-  }
-)
-
-export const blinkEvents = createTable(
-  "blink_event",
-  {
-    id: uuid("id").primaryKey().default(sql`gen_random_uuid()`),
-    blinkId: uuid("blink_id").notNull().references(() => blinks.id, { onDelete: 'cascade' }),
-    orgId: uuid("org_id").notNull().references(() => organizations.id, { onDelete: 'cascade' }),
-    eventType: jsonb("event_type").notNull(),
-    path: varchar("path", { length: 255 }),
-    userPubKey: varchar("user_pub_key", { length: 255 }).notNull(),
-    timestamp: timestamp("created_at", { withTimezone: true })
-    .default(sql`CURRENT_TIMESTAMP`)
-    .notNull()
-  }
-)
-
-export const blinks = createTable(
-  "blink",
-  {
-    id: uuid("id").primaryKey().default(sql`gen_random_uuid()`),
-    orgId: uuid("org_id").notNull().references(() => organizations.id, { onDelete: 'cascade' }),
-    actions: jsonb("actions"),
-    createdAt: timestamp("created_at", { withTimezone: true })
-      .default(sql`CURRENT_TIMESTAMP`)
-      .notNull(),
-  },
-);
-
-export const users = createTable("user", {
-  id: varchar("id", { length: 255 })
-    .notNull()
+export const organizations = createTable("organization", {
+  id: uuid("id")
     .primaryKey()
-    .$defaultFn(() => crypto.randomUUID()),
+    .default(sql`gen_random_uuid()`),
   name: varchar("name", { length: 255 }),
-  email: varchar("email", { length: 255 }).notNull(),
-  emailVerified: timestamp("email_verified", {
-    mode: "date",
+  apiKey: varchar("api_key", { length: 255 }),
+  subscription: varchar("subscription", { length: 255 }),
+  subscriptionStartDate: timestamp("subscription_start_date", {
     withTimezone: true,
-  }).default(sql`CURRENT_TIMESTAMP`),
-  image: varchar("image", { length: 255 }),
+  }),
+  subscriptionEndDate: timestamp("subscription_end_date", {
+    withTimezone: true,
+  }),
+  email: varchar("email", { length: 255 }).notNull(),
 });
 
-export const usersRelations = relations(users, ({ many }) => ({
-  accounts: many(accounts),
-}));
+export const blinkEvents = createTable("blink_event", {
+  id: uuid("id")
+    .primaryKey()
+    .default(sql`gen_random_uuid()`),
+  blinkId: uuid("blink_id")
+    .notNull()
+    .references(() => blinks.id, { onDelete: "cascade" }),
+  orgId: uuid("org_id")
+    .notNull()
+    .references(() => organizations.id, { onDelete: "cascade" }),
+  eventType: jsonb("event_type").notNull(),
+  path: varchar("path", { length: 255 }),
+  userPubKey: varchar("user_pub_key", { length: 255 }).notNull(),
+  timestamp: timestamp("created_at", { withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+});
+
+export const blinks = createTable("blink", {
+  id: uuid("id")
+    .primaryKey()
+    .default(sql`gen_random_uuid()`),
+  orgId: uuid("org_id")
+    .notNull()
+    .references(() => organizations.id, { onDelete: "cascade" }),
+  actions: jsonb("actions"),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+});
+
+export const users = createTable("user", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  name: text("name"),
+  email: text("email").unique(),
+  emailVerified: timestamp("emailVerified", { mode: "date" }),
+  image: text("image"),
+});
 
 export const accounts = createTable(
   "account",
   {
-    userId: varchar("user_id", { length: 255 })
+    userId: text("userId")
       .notNull()
-      .references(() => users.id),
-    type: varchar("type", { length: 255 })
-      .$type<AdapterAccount["type"]>()
-      .notNull(),
-    provider: varchar("provider", { length: 255 }).notNull(),
-    providerAccountId: varchar("provider_account_id", {
-      length: 255,
-    }).notNull(),
+      .references(() => users.id, { onDelete: "cascade" }),
+    type: text("type").$type<AdapterAccount>().notNull(),
+    provider: text("provider").notNull(),
+    providerAccountId: text("providerAccountId").notNull(),
     refresh_token: text("refresh_token"),
     access_token: text("access_token"),
     expires_at: integer("expires_at"),
-    token_type: varchar("token_type", { length: 255 }),
-    scope: varchar("scope", { length: 255 }),
+    token_type: text("token_type"),
+    scope: text("scope"),
     id_token: text("id_token"),
-    session_state: varchar("session_state", { length: 255 }),
+    session_state: text("session_state"),
   },
   (account) => ({
     compoundKey: primaryKey({
       columns: [account.provider, account.providerAccountId],
     }),
-    userIdIdx: index("account_user_id_idx").on(account.userId),
   }),
 );
 
-export const accountsRelations = relations(accounts, ({ one }) => ({
-  user: one(users, { fields: [accounts.userId], references: [users.id] }),
-}));
-
-export const sessions = createTable(
-  "session",
-  {
-    sessionToken: varchar("session_token", { length: 255 })
-      .notNull()
-      .primaryKey(),
-    userId: varchar("user_id", { length: 255 })
-      .notNull()
-      .references(() => users.id),
-    expires: timestamp("expires", {
-      mode: "date",
-      withTimezone: true,
-    }).notNull(),
-  },
-  (session) => ({
-    userIdIdx: index("session_user_id_idx").on(session.userId),
-  }),
-);
-
-export const sessionsRelations = relations(sessions, ({ one }) => ({
-  user: one(users, { fields: [sessions.userId], references: [users.id] }),
-}));
+export const sessions = createTable("session", {
+  sessionToken: text("sessionToken").primaryKey(),
+  userId: text("userId")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  expires: timestamp("expires", { mode: "date" }).notNull(),
+});
 
 export const verificationTokens = createTable(
-  "verification_token",
+  "verificationToken",
   {
-    identifier: varchar("identifier", { length: 255 }).notNull(),
-    token: varchar("token", { length: 255 }).notNull(),
-    expires: timestamp("expires", {
-      mode: "date",
-      withTimezone: true,
-    }).notNull(),
+    identifier: text("identifier").notNull(),
+    token: text("token").notNull(),
+    expires: timestamp("expires", { mode: "date" }).notNull(),
   },
-  (vt) => ({
-    compoundKey: primaryKey({ columns: [vt.identifier, vt.token] }),
+  (verificationToken) => ({
+    compositePk: primaryKey({
+      columns: [verificationToken.identifier, verificationToken.token],
+    }),
   }),
 );

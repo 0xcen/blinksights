@@ -8,6 +8,7 @@ import { blinkRouter } from "./routers/blink";
  */
 export const appRouter = createTRPCRouter({
   blink: blinkRouter,
+  org: orgRouter,
 });
 
 // export type definition of API
