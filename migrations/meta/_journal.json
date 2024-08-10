@@ -239,6 +239,69 @@
       "when": 1723310142344,
       "tag": "0033_lonely_living_tribunal",
       "breakpoints": true
+    },
+    {
+      "idx": 34,
+      "version": "6",
+      "when": 1723314178744,
+      "tag": "0034_moaning_doorman",
+      "breakpoints": true
+    },
+    {
+      "idx": 35,
+      "version": "6",
+      "when": 1723314287180,
+      "tag": "0035_striped_masque",
+      "breakpoints": true
+    },
+    {
+      "idx": 36,
+      "version": "6",
+      "when": 1723314314644,
+      "tag": "0036_lucky_monster_badoon",
+      "breakpoints": true
+    },
+    {
+      "idx": 37,
+      "version": "6",
+      "when": 1723314347083,
+      "tag": "0037_deep_the_santerians",
+      "breakpoints": true
+    },
+    {
+      "idx": 38,
+      "version": "6",
+      "when": 1723314379914,
+      "tag": "0038_orange_bishop",
+      "breakpoints": true
+    },
+    {
+      "idx": 39,
+      "version": "6",
+      "when": 1723314417799,
+      "tag": "0039_past_madame_web",
+      "breakpoints": true
+    },
+    {
+      "idx": 40,
+      "version": "6",
+      "when": 1723314465738,
+      "tag": "0040_damp_meltdown",
+      "breakpoints": true
+    },
+    {
+      "idx": 41,
+      "version": "6",
+      "when": 1723314487344,
+      "tag": "0041_bored_black_bolt",
+      "breakpoints": true
+    },
+    {
+      "idx": 42,
+      "version": "6",
+      "when": 1723318554047,
+      "tag": "0042_woozy_marten_broadcloak",
+      "breakpoints": true
     }
   ]
 }
