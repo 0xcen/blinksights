@@ -1,0 +1,1 @@
+ALTER TABLE "blinksights_blink_event" ALTER COLUMN "user_pub_key" DROP NOT NULL;
