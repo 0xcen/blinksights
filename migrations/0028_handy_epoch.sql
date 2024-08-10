@@ -1,0 +1,1 @@
+ALTER TABLE "blinksights_blink_event" DROP COLUMN IF EXISTS "_blink_id";

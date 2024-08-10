@@ -1,0 +1,1 @@
+ALTER TABLE "blinksights_blink_event" ALTER COLUMN "blink_id" SET DATA TYPE uuid;
