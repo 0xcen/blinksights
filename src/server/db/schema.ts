@@ -38,11 +38,11 @@ export const blinkEvents = createTable(
   "blink_event",
   {
     id: uuid("id").primaryKey().default(sql`gen_random_uuid()`),
-    blinkId: uuid("blink_id").notNull().references(() => blinks.id, { onDelete: 'cascade' }),
+    blinkId: varchar("blink_id").references(() => blinks.id, { onDelete: 'cascade' }),
     orgId: uuid("org_id").notNull().references(() => organizations.id, { onDelete: 'cascade' }),
     eventType: jsonb("event_type").notNull(),
     path: varchar("path", { length: 255 }),
-    userPubKey: varchar("user_pub_key", { length: 255 }).notNull(),
+    userPubKey: varchar("user_pub_key", { length: 255 }),
     timestamp: timestamp("created_at", { withTimezone: true })
     .default(sql`CURRENT_TIMESTAMP`)
     .notNull()
@@ -52,7 +52,7 @@ export const blinkEvents = createTable(
 export const blinks = createTable(
   "blink",
   {
-    id: uuid("id").primaryKey().default(sql`gen_random_uuid()`),
+    id: varchar("id").primaryKey(),
     orgId: uuid("org_id").notNull().references(() => organizations.id, { onDelete: 'cascade' }),
     actions: jsonb("actions"),
     createdAt: timestamp("created_at", { withTimezone: true })
