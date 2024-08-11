@@ -1,7 +1,6 @@
 "use client";
 
 import { Copy, CopyCheckIcon, Plus } from "lucide-react";
-import { useSession } from "next-auth/react";
 import { useState } from "react";
 import { Button } from "~/components/ui/button";
 import {
@@ -11,13 +10,15 @@ import {
   CardHeader,
   CardTitle,
 } from "~/components/ui/card";
+import useApiKeyMutation from "../hooks/useApiKeyMutation";
+import useOrganization from "../hooks/useOrganization";
 import { Input } from "./ui/input";
 import { toast } from "./ui/use-toast";
-import useApiKey from "../hooks/useApiKey";
 
 export function ApiKey() {
   const [showKey, setShowKey] = useState(false);
-  const { org, createApiKeyMutation } = useApiKey();
+  const org = useOrganization();
+  const apiKeyMutation = useApiKeyMutation();
 
   const copyToClipboard = () => {
     if (org.data?.apiKey) {
@@ -61,10 +62,10 @@ export function ApiKey() {
       )}
       <CardFooter>
         <Button
-          loading={createApiKeyMutation.isPending}
+          loading={apiKeyMutation.isPending}
           onClick={() => {
             if (!org.data?.apiKey) {
-              createApiKeyMutation.mutate();
+              apiKeyMutation.mutate();
             } else {
               copyToClipboard();
             }
