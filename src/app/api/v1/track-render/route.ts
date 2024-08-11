@@ -46,7 +46,7 @@ export const POST = async (
 
         const body = await request.json();
         console.log({body});
-        const { url, action } = body;
+        const { url, action, name, baseUrl } = body;
 
         const token = authHeader.split(' ')[1];
         if(!token){
@@ -58,9 +58,18 @@ export const POST = async (
           return new NextResponse(JSON.stringify({error: 'Unauthorized'}), {status: 401});
         }
 
-        // Id for the blink is url + orgId
-        const hash = createHash('sha256').update(url+org[0]!.id).digest('hex');
+        const path = url.replace(baseUrl, '');
 
+        let hash = '';
+
+        // Id for the blink is name + orgId if name exists, otherwise url + orgId
+        if(name){
+           hash = createHash('sha256').update(name+org[0]!.id).digest('hex');
+        }else{
+          hash = createHash('sha256').update(path+org[0]!.id).digest('hex');
+
+        }
+        
         insertRenderEvent(hash, org[0]!.id, action, url);
 
         return Response.json({}, {
