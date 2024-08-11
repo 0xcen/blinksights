@@ -1,24 +1,22 @@
-import { eq } from "drizzle-orm";
+import crypto from "crypto";
+import { and, eq, isNull } from "drizzle-orm";
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { db } from "../../db";
 import { organizations, users } from "../../db/schema";
 
 export const organizationRouter = createTRPCRouter({
-  get: publicProcedure
-    .input(
-      z.object({
-        id: z.string(),
-      }),
-    )
-    .query(async ({ input }) => {
-      const { id } = input;
-      const org = await db
-        .select()
-        .from(organizations)
-        .where(eq(organizations.id, id));
-      return org;
-    }),
+  get: publicProcedure.query(async ({ ctx }) => {
+    const orgId = ctx.session?.user?.orgId;
+    if (!orgId) {
+      throw new Error("User not found or doesn't belong to an organization");
+    }
+    const org = await db
+      .select()
+      .from(organizations)
+      .where(eq(organizations.id, orgId));
+    return org[0] ?? null;
+  }),
   create: publicProcedure
     .input(
       z.object({
@@ -51,4 +49,22 @@ export const organizationRouter = createTRPCRouter({
 
       return org;
     }),
+  setApiKey: publicProcedure.mutation(async ({ ctx }) => {
+    if (!ctx.session?.user?.orgId) {
+      throw new Error("User not found");
+    }
+    const apiKey = crypto.randomBytes(32).toString("hex");
+
+    await db
+      .update(organizations)
+      .set({ apiKey })
+      .where(
+        and(
+          eq(organizations.id, ctx.session.user.orgId),
+          isNull(organizations.apiKey),
+        ),
+      );
+
+    return {};
+  }),
 });

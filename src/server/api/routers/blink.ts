@@ -68,7 +68,7 @@ export const blinkRouter = createTRPCRouter({
   get: publicProcedure
     .input(
       z.object({
-        id: z.string().uuid(),
+        id: z.string(),
       }),
     )
     .query(async ({ input, ctx }): Promise<BlinkWithOrg> => {
@@ -101,12 +101,12 @@ export const blinkRouter = createTRPCRouter({
   getBlinkAnalytics: publicProcedure
     .input(
       z.object({
-        blinkId: z.string().uuid(),
+        id: z.string(),
         timeRange: z.enum(["24h", "7d", "30d"]).optional().default("24h"),
       }),
     )
     .query(async ({ input, ctx }) => {
-      const { blinkId, timeRange } = input;
+      const { id: blinkId, timeRange } = input;
       const org = ctx.session?.org;
 
       if (!org?.id) {
