@@ -23,7 +23,7 @@ async function insertRenderEvent(id: string, orgId: string, action: object, url:
   }
   
   if(result[0]?.orgId === orgId || newBlink){
-    await db.insert(blinkEvents).values({eventType: EventType.RENDER, orgId, blinkId: id, path: url});
+    // await db.insert(blinkEvents).values({eventType: EventType.RENDER, orgId, blinkId: id, path: url});
   }
 }
 

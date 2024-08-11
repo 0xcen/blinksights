@@ -1,5 +1,6 @@
 import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
 import { blinkRouter } from "./routers/blink";
+import { organizationRouter } from "./routers/organization";
 
 /**
  * This is the primary router for your server.
@@ -8,6 +9,7 @@ import { blinkRouter } from "./routers/blink";
  */
 export const appRouter = createTRPCRouter({
   blink: blinkRouter,
+  organization: organizationRouter,
 });
 
 // export type definition of API
