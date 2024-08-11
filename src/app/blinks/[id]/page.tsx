@@ -1,32 +1,19 @@
 "use client";
 import { useParams } from "next/navigation";
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-import useBlink from "../../../hooks/useBlink";
-import NumberCard from "../../../components/NumberCard";
-=======
-import NumberCard from "../../../components/NumberCard";
 import useBlink from "../../../hooks/useBlink";
 import BreadcrumbNav from "../../../components/BreadcrumbNav";
->>>>>>> Stashed changes
-=======
+import BlinkViewsChart from "~/components/BlinkViewsChart";
 import NumberCard from "../../../components/NumberCard";
-import useBlink from "../../../hooks/useBlink";
-import BreadcrumbNav from "../../../components/BreadcrumbNav";
->>>>>>> Stashed changes
+import useBlinkAnalytics from "../../../hooks/useBlinkAnalytics";
 
 const Page = () => {
   const { id } = useParams();
   const blink = useBlink(id as string);
+  const analytics = useBlinkAnalytics(id as string);
+
+  const timeRanges = ["7d", "30d", "90d", "1y"];
 
   return (
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-    <div>
-      <h1>{blink.data?.id}</h1>
-=======
-=======
->>>>>>> Stashed changes
     <div className="space-y-2">
       <BreadcrumbNav
         items={[
@@ -38,22 +25,24 @@ const Page = () => {
       />
 
       <h1>{blink.data?.title} Blink</h1>
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-      <div className="flex gap-2">
+      <div className="flex flex-wrap gap-2 md:flex-nowrap">
         <NumberCard
-          title={"Views"}
-          value={"100,000"}
-          description={"Your blinks have been seen a lot this week."}
-        />{" "}
+          title={"24h Views"}
+          value={analytics.data?.events.length?.toString() ?? "0"}
+          description={""}
+        />
         <NumberCard
-          title={"Interactions"}
-          value={"5,000"}
-          description={"Your blinks have been seen a lot this week."}
-        />{" "}
+          title={"7d Views"}
+          value={analytics.data?.events.length?.toString() ?? "0"}
+          description={""}
+        />
+        <NumberCard
+          title={"30d Views"}
+          value={analytics.data?.events.length?.toString() ?? "0"}
+          description={""}
+        />
       </div>
+      <BlinkViewsChart blinkId={id as string} timeRanges={timeRanges} />
     </div>
   );
 };

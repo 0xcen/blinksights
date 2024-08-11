@@ -1,9 +1,9 @@
-import { and, eq, sql } from "drizzle-orm";
+import { and, eq, gte, sql } from "drizzle-orm";
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
-import { BlinkWithOrg, type Blink } from "../../../types/actions";
 import { db } from "../../db";
-import { blinks } from "../../db/schema";
+import { blinkEvents, blinks } from "../../db/schema";
+import { Blink, BlinkWithOrg } from "../../../types/actions";
 
 export const blinkRouter = createTRPCRouter({
   all: publicProcedure
@@ -18,7 +18,7 @@ export const blinkRouter = createTRPCRouter({
         input,
         ctx,
       }): Promise<{
-        blinks: Blink[];
+        blinks: BlinkWithOrg[];
         total: number;
         page: number;
         pageSize: number;
@@ -31,9 +31,9 @@ export const blinkRouter = createTRPCRouter({
         if (!org?.id) {
           throw new Error("No organization found");
         }
-        const [totalCount, paginatedBlinks] = await Promise.all([
+        const [totalCountResult, paginatedBlinks] = await Promise.all([
           db
-            .select({ count: sql<number>`count(*)` })
+            .select({ count: sql<number>`count(*)::int` })
             .from(blinks)
             .where(eq(blinks.orgId, org.id))
             .then((result) => result[0]),
@@ -46,17 +46,19 @@ export const blinkRouter = createTRPCRouter({
             .offset(offset),
         ]);
 
+        const totalCount = totalCountResult?.count ?? 0;
+
         return {
           blinks: paginatedBlinks.map(
             (blink): BlinkWithOrg =>
               ({
                 id: blink.id,
                 orgId: blink.orgId,
-                createdAt: blink.createdAt,
+                createdAt: blink.createdAt.toISOString(),
                 ...(blink.actions as Blink),
-              }) as unknown as BlinkWithOrg,
+              }) as BlinkWithOrg,
           ),
-          total: totalCount?.count ?? 0,
+          total: totalCount,
           page,
           pageSize,
         };
@@ -66,7 +68,7 @@ export const blinkRouter = createTRPCRouter({
   get: publicProcedure
     .input(
       z.object({
-        id: z.string().uuid(),
+        id: z.string(),
       }),
     )
     .query(async ({ input, ctx }): Promise<BlinkWithOrg> => {
@@ -77,11 +79,12 @@ export const blinkRouter = createTRPCRouter({
         throw new Error("No organization found");
       }
 
-      const [blink] = await db
+      const blink = await db
         .select()
         .from(blinks)
         .where(and(eq(blinks.id, id), eq(blinks.orgId, org.id)))
-        .limit(1);
+        .limit(1)
+        .then((results) => results[0]);
 
       if (!blink) {
         throw new Error("Blink not found");
@@ -90,8 +93,62 @@ export const blinkRouter = createTRPCRouter({
       return {
         id: blink.id,
         orgId: blink.orgId,
-        createdAt: String(blink.createdAt),
+        createdAt: blink.createdAt.toISOString(),
         ...(blink.actions as Blink),
+      };
+    }),
+
+  getBlinkAnalytics: publicProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        timeRange: z.enum(["24h", "7d", "30d"]).optional().default("24h"),
+      }),
+    )
+    .query(async ({ input, ctx }) => {
+      const { id: blinkId, timeRange } = input;
+      const org = ctx.session?.org;
+
+      if (!org?.id) {
+        throw new Error("No organization found");
+      }
+
+      // Calculate the start date based on the timeRange
+      const now = new Date();
+      let startDate: Date | undefined;
+
+      switch (timeRange) {
+        case "24h":
+          startDate = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+          break;
+        case "7d":
+          startDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+          break;
+        case "30d":
+          startDate = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+          break;
+      }
+
+      // Build the query
+      // Build the query conditions
+      const conditions = [
+        eq(blinkEvents.blinkId, blinkId),
+        eq(blinkEvents.orgId, org.id),
+      ];
+      if (startDate) {
+        conditions.push(gte(blinkEvents.timestamp, startDate));
+      }
+
+      // Execute the query
+      const events = await db
+        .select()
+        .from(blinkEvents)
+        .where(and(...conditions));
+
+      return {
+        blinkId,
+        events,
+        timeRange,
       };
     }),
 });
