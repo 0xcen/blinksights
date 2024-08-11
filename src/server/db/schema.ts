@@ -43,7 +43,7 @@ export const blinkEvents = createTable("blink_event", {
   id: uuid("id")
     .primaryKey()
     .default(sql`gen_random_uuid()`),
-  blinkId: uuid("blink_id")
+  blinkId: varchar("blink_id")
     .notNull()
     .references(() => blinks.id, { onDelete: "cascade" }),
   orgId: uuid("org_id")
@@ -58,9 +58,9 @@ export const blinkEvents = createTable("blink_event", {
 });
 
 export const blinks = createTable("blink", {
-  id: uuid("id")
+  id: varchar("id")
     .primaryKey()
-    .default(sql`gen_random_uuid()`),
+    .notNull(),
   orgId: uuid("org_id")
     .notNull()
     .references(() => organizations.id, { onDelete: "cascade" }),
