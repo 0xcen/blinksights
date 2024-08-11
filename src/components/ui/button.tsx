@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
+import Link from "next/link";
 
 import { cn } from "~/lib/utils";
 import { Loader2 } from "lucide-react";
@@ -40,17 +41,44 @@ export interface ButtonProps
     VariantProps<typeof buttonVariants> {
   asChild?: boolean;
   loading?: boolean;
+  href?: string;
 }
 
-const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, loading, variant, size, asChild = false, ...props }, ref) => {
+const Button = React.forwardRef<
+  HTMLButtonElement | HTMLAnchorElement,
+  ButtonProps
+>(
+  (
+    { className, loading, variant, size, asChild = false, href, ...props },
+    ref,
+  ) => {
+    const isDisabled = props.disabled ?? loading;
+    const sharedProps = {
+      className: cn(buttonVariants({ variant, size, className })),
+      ...props,
+    };
+
+    if (href) {
+      return (
+        <Link
+          {...(sharedProps as React.AnchorHTMLAttributes<HTMLAnchorElement>)}
+          href={href}
+          className={cn(
+            isDisabled && "pointer-events-none cursor-none",
+            "flex items-center justify-center text-nowrap",
+          )}
+        >
+          {props.children}
+        </Link>
+      );
+    }
+
     const Comp = asChild ? Slot : "button";
     return (
       <Comp
-        className={cn(buttonVariants({ variant, size, className }))}
-        ref={ref}
-        {...props}
-        disabled={loading}
+        {...(sharedProps as React.ButtonHTMLAttributes<HTMLButtonElement>)}
+        ref={ref as React.Ref<HTMLButtonElement>}
+        disabled={isDisabled}
       >
         {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
         {props.children}

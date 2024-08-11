@@ -15,8 +15,20 @@ import { Input } from "./ui/input";
 import { toast } from "./ui/use-toast";
 
 export function ApiKey() {
-  const { data: session } = useSession();
+  //   const { data: session } = useSession();
   const [showKey, setShowKey] = useState(false);
+
+  // Mock session data for development purposes
+  const mockSession = {
+    org: {
+      apiKey: "mock_api_key_12345",
+    },
+  };
+
+  // Use the mock session instead of the real one
+  const { data: session } = { data: mockSession } as {
+    data: typeof mockSession;
+  };
 
   const copyToClipboard = () => {
     if (session?.org?.apiKey) {

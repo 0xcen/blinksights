@@ -60,8 +60,6 @@ export const authOptions: NextAuthOptions = {
         .leftJoin(organizations, eq(users.orgId, organizations.id))
         .where(eq(users.id, data.user.id));
 
-      console.log("🚀 ~ session: ~ res:", res);
-
       const nextSession = {
         ...data.session,
         user: {

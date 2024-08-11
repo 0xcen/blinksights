@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { Table } from "~/components/Table";
 import {
   Card,
   CardContent,
@@ -8,24 +9,15 @@ import {
   CardHeader,
   CardTitle,
 } from "~/components/ui/card";
-import { Table } from "~/components/Table";
-import { columns } from "./columns";
 import useBlinks from "~/hooks/useBlinks";
-
-export interface Blink {
-  id: string;
-  name: string;
-  description: string;
-  createdAt: Date;
-}
+import { columns } from "./columns";
 
 export default function Page() {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
-  const [data, setData] = useState<Blink[]>([]);
-  const [total, setTotal] = useState(0);
 
   const { blinks } = useBlinks({ page, pageSize });
+  console.log("🚀 ~ Page ~ blinks:", blinks.data);
 
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
@@ -46,7 +38,7 @@ export default function Page() {
       </CardHeader>
       <CardContent className="overflow-x-auto">
         <Table
-          data={blinks.data?.blinks ?? []}
+          data={blinks?.data?.blinks ?? []}
           columns={columns}
           pagination={{
             page,
