@@ -39,9 +39,9 @@ export default function Page() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Products</CardTitle>
+        <CardTitle>Your Blinks</CardTitle>
         <CardDescription>
-          Manage your products and view their sales performance.
+          View the performance of any of your blinks.
         </CardDescription>
       </CardHeader>
       <CardContent>

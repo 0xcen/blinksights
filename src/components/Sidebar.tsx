@@ -4,15 +4,15 @@ import { Button } from "~/components/ui/button";
 import NavLink from "./NavLink";
 import UpgradeCard from "./UpgradeCard";
 import { navLinks } from "~/config/nav";
+import Logo from "./Logo";
 
 export default function Sidebar() {
   return (
     <div className="hidden border-r bg-muted/40 md:block">
       <div className="flex h-full max-h-screen flex-col gap-2">
         <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
-          <Link href="/" className="flex items-center gap-2 font-semibold">
-            <ChartSpline className="h-6 w-6" />
-            <span className="">Blinksights</span>
+          <Link href="/">
+            <Logo />
           </Link>
           <Button variant="outline" size="icon" className="ml-auto h-8 w-8">
             <Bell className="h-4 w-4" />
@@ -27,7 +27,6 @@ export default function Sidebar() {
                 href={link.href}
                 icon={link.icon}
                 label={link.label}
-                badge={link.badge}
               />
             ))}
           </nav>

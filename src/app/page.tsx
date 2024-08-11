@@ -1,13 +1,12 @@
-import SignInButton from "~/components/SignInButton";
 import { HydrateClient } from "~/trpc/server";
+import Dashboard from "./Dashboard";
 
-const page = () => {
+const Page = () => {
   return (
     <HydrateClient>
-      <div>Hello world</div>
-      <SignInButton />
+      <Dashboard />
     </HydrateClient>
   );
 };
 
-export default page;
+export default Page;

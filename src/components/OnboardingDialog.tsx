@@ -1,5 +1,5 @@
 "use client";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { useState } from "react";
 
 import { Label } from "@radix-ui/react-label";
@@ -67,7 +67,14 @@ const OnboardingDialog = ({ open }: Props) => {
             </div>
           </form>
         </div>
-        <AlertDialogFooter className="flex flex-col gap-4">
+        <AlertDialogFooter className="flex flex-col gap-2">
+          <Button
+            variant="outline"
+            onClick={() => signOut({ callbackUrl: "/" })}
+            className="w-full"
+          >
+            Back
+          </Button>
           <Button
             loading={createOrg.isPending}
             onClick={() => handleSave()}

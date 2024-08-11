@@ -1,14 +1,22 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import {
-  Table as UITable,
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "~/components/ui/pagination";
+import {
   TableBody,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
+  Table as UITable,
 } from "~/components/ui/table";
 import { ColumnConfig } from "~/types/tableTypes";
-import { Button } from "./ui/button";
 import {
   Select,
   SelectContent,
@@ -40,8 +48,8 @@ export function Table<T extends { id: string | number }>({
   const totalPages = Math.ceil(total / pageSize);
 
   return (
-    <div>
-      <UITable>
+    <div className="w-full overflow-hidden">
+      <UITable className="">
         <TableHeader>
           <TableRow>
             {columns.map((column) => (
@@ -81,22 +89,33 @@ export function Table<T extends { id: string | number }>({
           {Math.min(page * pageSize, total)} of {total} entries
         </div>
         <div className="flex items-center space-x-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => onPageChange(page - 1)}
-            disabled={page === 1}
-          >
-            Previous
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => onPageChange(page + 1)}
-            disabled={page === totalPages}
-          >
-            Next
-          </Button>
+          <Pagination>
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious
+                  onClick={() => onPageChange(page - 1)}
+                  isDisabled={page === 1}
+                />
+              </PaginationItem>
+              {Array.from({ length: totalPages }).map((_, index) => (
+                <PaginationItem className="hidden md:block" key={index + 1}>
+                  <PaginationLink
+                    onClick={() => onPageChange(index + 1)}
+                    isDisabled={page === index + 1}
+                  >
+                    {index + 1}
+                  </PaginationLink>
+                </PaginationItem>
+              ))}
+              {totalPages > 5 && <PaginationEllipsis />}
+              <PaginationItem>
+                <PaginationNext
+                  isDisabled={page === totalPages}
+                  onClick={() => onPageChange(page + 1)}
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
           <Select
             value={pageSize.toString()}
             onValueChange={(value) => onPageSizeChange(Number(value))}

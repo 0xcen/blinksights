@@ -6,6 +6,7 @@ import Sidebar from "~/components/Sidebar";
 import Header from "~/components/Header";
 import { TRPCReactProvider } from "../trpc/react";
 import { SessionProvider } from "next-auth/react";
+import { Toaster } from "../components/ui/toaster";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -30,6 +31,7 @@ export default function RootLayout({
                 <Header />
                 <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
                   {children}
+                  <Toaster />
                 </main>
               </div>
             </div>

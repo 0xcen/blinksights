@@ -12,7 +12,7 @@ import GoogleProvider from "next-auth/providers/google";
 
 import { env } from "~/env";
 import { db } from "~/server/db";
-import { users } from "~/server/db/schema";
+import { organizations, users } from "~/server/db/schema";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -22,18 +22,27 @@ import { users } from "~/server/db/schema";
  */
 declare module "next-auth" {
   interface Session extends DefaultSession {
-    user: {
-      id: string;
-      orgId: string | null;
-      // ...other properties
-      // role: UserRole;
-    };
+    user: User;
+    org: Organization;
   }
 
   interface User {
+    id: string;
     orgId: string | null;
+    name: string;
+    email: string;
+    createdAt: Date;
     // ...other properties
     // role: UserRole;
+  }
+
+  interface Organization {
+    name: string;
+    email: string;
+    id: string;
+    apiKey: string;
+    createdAt: Date;
+    updatedAt: Date;
   }
 }
 
@@ -48,15 +57,19 @@ export const authOptions: NextAuthOptions = {
       const res = await db
         .select()
         .from(users)
+        .leftJoin(organizations, eq(users.orgId, organizations.id))
         .where(eq(users.id, data.user.id));
+
+      console.log("🚀 ~ session: ~ res:", res);
 
       const nextSession = {
         ...data.session,
         user: {
           ...data.session.user,
           id: data.user.id,
-          orgId: res[0]?.orgId ?? null,
+          ...res[0]?.user,
         },
+        org: res[0]?.organization,
       };
       return nextSession;
     },

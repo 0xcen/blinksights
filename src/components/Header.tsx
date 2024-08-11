@@ -1,8 +1,10 @@
 "use client";
-import { Search, CircleUser, Menu, Link } from "lucide-react";
+import { CircleUser, Menu, Search } from "lucide-react";
+import { signOut, useSession } from "next-auth/react";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import MobileNav from "~/components/MobileNav";
 import { Button } from "~/components/ui/button";
-import { Input } from "~/components/ui/input";
-import { Sheet, SheetContent, SheetTrigger } from "~/components/ui/sheet";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,12 +13,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
-import MobileNav from "~/components/MobileNav";
-import { getSession, signOut, useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { Input } from "~/components/ui/input";
+import { Sheet, SheetContent, SheetTrigger } from "~/components/ui/sheet";
 import LoginDialog from "./LoginDialog";
 import OnboardingDialog from "./OnboardingDialog";
-import { useEffect } from "react";
+import Link from "next/link";
 
 export default function Header() {
   const router = useRouter();
@@ -36,7 +37,7 @@ export default function Header() {
         </SheetContent>
       </Sheet>
       <div className="w-full flex-1">
-        <form>
+        {/* <form>
           <div className="relative">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
@@ -45,7 +46,7 @@ export default function Header() {
               className="w-full appearance-none bg-background pl-8 shadow-none md:w-2/3 lg:w-1/3"
             />
           </div>
-        </form>
+        </form> */}
       </div>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
@@ -60,7 +61,17 @@ export default function Header() {
               }
             }}
           >
-            <CircleUser className="h-5 w-5" />
+            {session?.user.image ? (
+              <Image
+                src={session?.user.image}
+                width={36}
+                height={36}
+                className="rounded-full"
+                alt="user icon"
+              />
+            ) : (
+              <CircleUser className="h-5 w-5" />
+            )}
             <span className="sr-only">Toggle user menu</span>
           </Button>
         </DropdownMenuTrigger>
@@ -68,12 +79,16 @@ export default function Header() {
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>My Account</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Settings</DropdownMenuItem>
+            <Link href="/settings">
+              <DropdownMenuItem>Settings</DropdownMenuItem>
+            </Link>
             <DropdownMenuItem>Support</DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => signOut()}>
-              Logout
-            </DropdownMenuItem>
+            <Link href="/">
+              <DropdownMenuItem onClick={() => signOut()}>
+                Logout
+              </DropdownMenuItem>
+            </Link>
           </DropdownMenuContent>
         ) : (
           <DropdownMenuContent align="end">
