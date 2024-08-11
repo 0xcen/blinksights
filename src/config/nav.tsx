@@ -1,4 +1,5 @@
-import { Home, Eye, BookOpen } from "lucide-react";
+import { GearIcon } from "@radix-ui/react-icons";
+import { Home, Eye, BookOpen, KeyRoundIcon } from "lucide-react";
 
 export const navLinks = [
   {
@@ -10,7 +11,16 @@ export const navLinks = [
     href: "/blinks",
     icon: <Eye className="h-4 w-4" />,
     label: "Blinks",
-    badge: "6",
+  },
+  {
+    href: "/organization",
+    icon: <KeyRoundIcon className="h-4 w-4" />,
+    label: "API Key",
+  },
+  {
+    href: "/settings",
+    icon: <GearIcon className="h-4 w-4" />,
+    label: "Settings",
   },
   {
     href: "/docs",

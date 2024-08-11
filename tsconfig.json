@@ -37,7 +37,8 @@
     "**/*.cjs",
     "**/*.js",
     ".next/types/**/*.ts",
-    "src/config/nav.tss"
+    "src/config/nav.tss",
+    "src/app/(authenticated)/layouttsx"
   ],
   "exclude": ["node_modules"]
 }
