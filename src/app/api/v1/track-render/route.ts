@@ -23,7 +23,7 @@ async function insertRenderEvent(id: string, orgId: string, action: object, url:
   }
   
   if(result[0]?.orgId === orgId || newBlink){
-    // await db.insert(blinkEvents).values({eventType: EventType.RENDER, orgId, blinkId: id, path: url});
+    await db.insert(blinkEvents).values({eventType: EventType.RENDER, orgId, blinkId: id, path: url});
   }
 }
 
@@ -45,8 +45,8 @@ export const POST = async (
         }
 
         const body = await request.json();
-        const { url, action } = body;
-        const hash = createHash('sha256').update(url).digest('hex');
+        console.log({body});
+        const { url, action, name, baseUrl } = body;
 
         const token = authHeader.split(' ')[1];
         if(!token){
@@ -58,6 +58,18 @@ export const POST = async (
           return new NextResponse(JSON.stringify({error: 'Unauthorized'}), {status: 401});
         }
 
+        const path = url.replace(baseUrl, '');
+
+        let hash = '';
+
+        // Id for the blink is name + orgId if name exists, otherwise url + orgId
+        if(name){
+           hash = createHash('sha256').update(name+org[0]!.id).digest('hex');
+        }else{
+          hash = createHash('sha256').update(path+org[0]!.id).digest('hex');
+
+        }
+        
         insertRenderEvent(hash, org[0]!.id, action, url);
 
         return Response.json({}, {
