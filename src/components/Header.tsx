@@ -14,7 +14,12 @@ import {
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
 import { Input } from "~/components/ui/input";
-import { Sheet, SheetContent, SheetTrigger } from "~/components/ui/sheet";
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetTrigger,
+} from "~/components/ui/sheet";
 import LoginDialog from "./LoginDialog";
 import OnboardingDialog from "./OnboardingDialog";
 import Link from "next/link";

@@ -37,14 +37,14 @@ export default function Page() {
   };
 
   return (
-    <Card>
+    <Card className="">
       <CardHeader>
         <CardTitle>Your Blinks</CardTitle>
         <CardDescription>
           View the performance of any of your blinks.
         </CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="overflow-x-auto">
         <Table
           data={blinks.data?.blinks ?? []}
           columns={columns}
