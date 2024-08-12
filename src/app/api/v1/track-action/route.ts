@@ -22,7 +22,7 @@ async function insertActionEvent(id: string, orgId: string, url: string, userPub
     }
 
     if(result[0]?.orgId === orgId){
-        await db.insert(blinkEvents).values({eventType: EventType.INTERACTION, orgId, blinkId: id, url: url, userPubKey: userPubKey});
+        await db.insert(blinkEvents).values({eventType: EventType.INTERACTION, orgId, blinkId: id, url: url, payerPubKey: userPubKey});
     }
 }
 
@@ -32,17 +32,19 @@ export const POST = async (
             const authHeader = request.headers.get('Authorization');
             const body = await request.json();
 
-            const { referer, pubKey, requestUrl } = body;
+            const { blinkUrl, payerPubKey, requestUrl } = body;
 
-            const splitted = referer?.split('solana-action:');
+            const decodedBlinkUrl = decodeURIComponent(blinkUrl);
+            const splitted = decodedBlinkUrl?.split('solana-action:');
+            console.log(splitted);
             const length = splitted?.length;
             const url = splitted?.length && splitted.length > 1 ? splitted[length-1] : null;
 
-            const org = await isAuthorized(authHeader);
+            const org = await isAuthorized(authHeader, url!);
 
-            const hash = createBlinkId(url, org[0]!.id);
+            const hash = createBlinkId(url!, org[0]!.id);
 
-            insertActionEvent(hash, org[0]!.id, requestUrl, pubKey);
+            insertActionEvent(hash, org[0]!.id, requestUrl, payerPubKey);
 
             return Response.json({}, {
                 status:200,

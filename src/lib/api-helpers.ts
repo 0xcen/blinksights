@@ -18,7 +18,7 @@ async function getOrg(apiKey: string){
  * @returns organization
  * @throws Unauthorized if the user is not authorized to access the API.
  */
-export async function isAuthorized(authHeader: string | null) {
+export async function isAuthorized(authHeader: string | null, url: string | null) {
     if(!authHeader || !authHeader.startsWith('Bearer ')){
         throw new Error('Unauthorized');
     }
@@ -30,6 +30,10 @@ export async function isAuthorized(authHeader: string | null) {
 
     const org = await getOrg(token);
     if(!org || org.length === 0){
+        throw new Error('Unauthorized');
+    }
+
+    if(url === null){
         throw new Error('Unauthorized');
     }
 

@@ -34,11 +34,9 @@ export const POST = async (
   request: NextRequest) => {
     try{
         const authHeader = request.headers.get('Authorization');
-
-        const org = await isAuthorized(authHeader);
-
         const body = await request.json();
         const { url } = body;
+        const org = await isAuthorized(authHeader, url);
         const action = body.action as ActionGetResponse;
 
         // Create blink id
