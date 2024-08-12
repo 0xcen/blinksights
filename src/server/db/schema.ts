@@ -47,9 +47,9 @@ export const blinkEvents = createTable("blink_event", {
     .notNull()
     .references(() => organizations.id, { onDelete: "cascade" }),
   eventType: integer("event_type").notNull(),
-  path: varchar("path", { length: 255 }),
-  params: varchar("params", { length: 255 }),
+  url: varchar("url", { length: 255 }),
   userPubKey: varchar("user_pub_key", { length: 255 }),
+  trackingPubKey: varchar("tracking_pub_key", { length: 255 }),
   timestamp: timestamp("created_at", { withTimezone: true })
     .default(sql`CURRENT_TIMESTAMP`)
     .notNull(),
@@ -62,7 +62,12 @@ export const blinks = createTable("blink", {
   orgId: uuid("org_id")
     .notNull()
     .references(() => organizations.id, { onDelete: "cascade" }),
-  actions: jsonb("actions"),
+  actions: jsonb('actions').default(sql`'[]'::jsonb`),
+  url: varchar("url", { length: 255 }),
+  title: varchar("title", { length: 255 }),
+  description: varchar("description", { length: 255 }),
+  label: varchar("label", { length: 255 }),
+  icon: varchar("icon", { length: 1024 }),
   createdAt: timestamp("created_at", { withTimezone: true })
     .default(sql`CURRENT_TIMESTAMP`)
     .notNull(),

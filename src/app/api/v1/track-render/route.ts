@@ -4,6 +4,7 @@ import { blinkEvents, blinks, organizations } from '~/server/db/schema';
 import { createHash } from 'crypto';
 import {eq} from 'drizzle-orm';
 import { EventType } from './../../../../enums/events'
+import { ActionGetResponse } from '@solana/actions';
 
 /**
  * Checks if blink already exists in db and creates it if not.
@@ -12,18 +13,20 @@ import { EventType } from './../../../../enums/events'
  * @param action: blink action object
  * @param url: url
  */
-async function insertRenderEvent(id: string, orgId: string, action: object, url: string){
+async function insertRenderEvent(id: string, orgId: string, action: ActionGetResponse, url: string){
 
   const result = await db.select().from(blinks).where(eq(blinks.id, id));
   let newBlink = false;
 
+  // If blink doesn't exist, create it
   if(!result || result.length === 0){
     newBlink = true;
-    await db.insert(blinks).values({id, orgId, actions: action }); 
+    await db.insert(blinks).values({id, orgId, actions: action.links?.actions, title: action.title, description: action.description, label: action.label, icon: action.icon, url: url }); 
   }
   
+  // Add event to blink events table
   if(result[0]?.orgId === orgId || newBlink){
-    await db.insert(blinkEvents).values({eventType: EventType.RENDER, orgId, blinkId: id, path: url});
+    await db.insert(blinkEvents).values({eventType: EventType.RENDER, orgId, blinkId: id, url: url});
   }
 }
 
@@ -45,8 +48,8 @@ export const POST = async (
         }
 
         const body = await request.json();
-        console.log({body});
-        const { url, action, name, baseUrl } = body;
+        const { url, baseUrl } = body;
+        const action = body.action as ActionGetResponse;
 
         const token = authHeader.split(' ')[1];
         if(!token){
@@ -58,17 +61,8 @@ export const POST = async (
           return new NextResponse(JSON.stringify({error: 'Unauthorized'}), {status: 401});
         }
 
-        const path = url.replace(baseUrl, '');
-
-        let hash = '';
-
         // Id for the blink is name + orgId if name exists, otherwise url + orgId
-        if(name){
-           hash = createHash('sha256').update(name+org[0]!.id).digest('hex');
-        }else{
-          hash = createHash('sha256').update(path+org[0]!.id).digest('hex');
-
-        }
+        const hash = createHash('sha256').update(url+org[0]!.id).digest('hex');
         
         insertRenderEvent(hash, org[0]!.id, action, url);
 

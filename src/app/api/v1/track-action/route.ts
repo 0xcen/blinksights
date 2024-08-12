@@ -6,7 +6,7 @@ import { db } from '~/server/db';
 import {eq} from 'drizzle-orm';
 import { EventType } from './../../../../enums/events'
 
-async function insertActionEvent(id: string, orgId: string, params: string, url: string, userPubKey: string | null){
+async function insertActionEvent(id: string, orgId: string, url: string, userPubKey: string | null){
 
     const result = await db.select().from(blinks).where(eq(blinks.id, id));
 
@@ -15,7 +15,7 @@ async function insertActionEvent(id: string, orgId: string, params: string, url:
     }
 
     if(result[0]?.orgId === orgId){
-        await db.insert(blinkEvents).values({eventType: EventType.INTERACTION, orgId, blinkId: id, path: url, userPubKey: userPubKey, params: params});
+        await db.insert(blinkEvents).values({eventType: EventType.INTERACTION, orgId, blinkId: id, url: url, userPubKey: userPubKey});
     }
 }
 
@@ -34,7 +34,7 @@ export const POST = async (
             const authHeader = request.headers.get('Authorization');
             const body = await request.json();
 
-            const { referer, params, pubKey, requestUrl } = body;
+            const { referer, pubKey, requestUrl } = body;
 
             const splitted = referer?.split('solana-action:');
             const length = splitted?.length;
@@ -56,7 +56,7 @@ export const POST = async (
 
             const hash = createHash('sha256').update(url+org[0]!.id).digest('hex');
 
-            insertActionEvent(hash, org[0]!.id, params, requestUrl, pubKey);
+            insertActionEvent(hash, org[0]!.id, requestUrl, pubKey);
 
             return Response.json({}, {
                 status:200,
