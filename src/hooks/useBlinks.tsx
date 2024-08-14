@@ -1,7 +1,6 @@
 "use client";
 import { useSession } from "next-auth/react";
 import { api } from "../trpc/react";
-import { Blink } from "../types/actions";
 
 interface Props {
   page?: number;
@@ -17,7 +16,7 @@ const useBlinks = ({ page, pageSize }: Props) => {
       pageSize: pageSize ?? 10,
     },
     {
-      queryHash: `${session?.org.id}-${page}-${pageSize}`,
+      queryHash: `${session?.org?.id}-${page}-${pageSize}`,
     },
   );
 

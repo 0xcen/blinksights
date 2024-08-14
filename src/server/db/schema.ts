@@ -1,6 +1,5 @@
-import { sql } from "drizzle-orm";
+import { relations, sql } from "drizzle-orm";
 import {
-  boolean,
   integer,
   jsonb,
   pgTable,
@@ -11,8 +10,6 @@ import {
   uuid,
   varchar,
 } from "drizzle-orm/pg-core";
-import { relations } from "drizzle-orm";
-import { AdapterAccount } from "next-auth/adapters";
 
 /**
  * This is an example of how to use the multi-project schema feature of Drizzle ORM. Use the same
@@ -49,9 +46,10 @@ export const blinkEvents = createTable("blink_event", {
   orgId: uuid("org_id")
     .notNull()
     .references(() => organizations.id, { onDelete: "cascade" }),
-  eventType: jsonb("event_type").notNull(),
+  eventType: integer("event_type").notNull(),
   path: varchar("path", { length: 255 }),
-  userPubKey: varchar("user_pub_key", { length: 255 }).notNull(),
+  params: varchar("params", { length: 255 }),
+  userPubKey: varchar("user_pub_key", { length: 255 }),
   timestamp: timestamp("created_at", { withTimezone: true })
     .default(sql`CURRENT_TIMESTAMP`)
     .notNull(),

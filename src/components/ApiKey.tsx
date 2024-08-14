@@ -1,7 +1,6 @@
 "use client";
 
 import { Copy, CopyCheckIcon, Plus } from "lucide-react";
-import { useSession } from "next-auth/react";
 import { useState } from "react";
 import { Button } from "~/components/ui/button";
 import {
@@ -11,28 +10,19 @@ import {
   CardHeader,
   CardTitle,
 } from "~/components/ui/card";
+import useApiKeyMutation from "../hooks/useApiKeyMutation";
+import useOrganization from "../hooks/useOrganization";
 import { Input } from "./ui/input";
 import { toast } from "./ui/use-toast";
 
 export function ApiKey() {
-  //   const { data: session } = useSession();
   const [showKey, setShowKey] = useState(false);
-
-  // Mock session data for development purposes
-  const mockSession = {
-    org: {
-      apiKey: "mock_api_key_12345",
-    },
-  };
-
-  // Use the mock session instead of the real one
-  const { data: session } = { data: mockSession } as {
-    data: typeof mockSession;
-  };
+  const org = useOrganization();
+  const apiKeyMutation = useApiKeyMutation();
 
   const copyToClipboard = () => {
-    if (session?.org?.apiKey) {
-      void navigator.clipboard.writeText(session.org.apiKey);
+    if (org.data?.apiKey) {
+      void navigator.clipboard.writeText(org.data?.apiKey);
       toast({
         title: "API Key Copied",
         description: "Remember to keep it secure and never share it publicly.",
@@ -46,17 +36,17 @@ export function ApiKey() {
       <CardHeader className="pb-3">
         <CardTitle>API Key</CardTitle>
         <CardDescription className="max-w-2xl text-balance leading-relaxed">
-          {session?.org?.apiKey
+          {org.data?.apiKey
             ? "Use the API key below to authenticate your requests. Remember to keep it secure and never share it publicly."
             : "Create an API key to start tracking events on your Blinks."}{" "}
         </CardDescription>
       </CardHeader>
-      {session?.org?.apiKey && (
+      {org.data?.apiKey && (
         <div className="px-6 pb-4">
           <div className="relative">
             <Input
               type={showKey ? "text" : "password"}
-              value={session.org?.apiKey}
+              value={org?.data.apiKey}
               readOnly
             />
             <Button
@@ -71,13 +61,22 @@ export function ApiKey() {
         </div>
       )}
       <CardFooter>
-        <Button onClick={copyToClipboard}>
-          {session?.org?.apiKey ? (
+        <Button
+          loading={apiKeyMutation.isPending}
+          onClick={() => {
+            if (!org.data?.apiKey) {
+              apiKeyMutation.mutate();
+            } else {
+              copyToClipboard();
+            }
+          }}
+        >
+          {org.data?.apiKey ? (
             <Copy className="mr-2 h-4 w-4" />
           ) : (
             <Plus className="mr-2 size-4" />
           )}
-          {session?.org?.apiKey ? "Copy API Key" : "Create new API Key"}
+          {org.data?.apiKey ? "Copy API Key" : "Create new API Key"}
         </Button>
       </CardFooter>
     </Card>

@@ -67,7 +67,12 @@ export const authOptions: NextAuthOptions = {
           id: data.user.id,
           ...res[0]?.user,
         },
-        org: res[0]?.organization,
+        org: res[0]?.organization
+          ? {
+              ...res[0].organization,
+              apiKey: null,
+            }
+          : null,
       };
       return nextSession;
     },
