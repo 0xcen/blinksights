@@ -1,12 +1,12 @@
 import { HydrateClient } from "~/trpc/server";
-import Dashboard from "./Dashboard";
+import View from "./View";
 
-const Page = () => {
+const page = () => {
   return (
     <HydrateClient>
-      <Dashboard />
+      <View />
     </HydrateClient>
   );
 };
 
-export default Page;
+export default page;
