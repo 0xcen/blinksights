@@ -1,19 +1,62 @@
 "use client";
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import "~/styles/globals.css";
-import Sidebar from "~/components/Sidebar";
+import { Loader2 } from "lucide-react";
+import { SessionProvider, useSession } from "next-auth/react";
+import { Manrope } from "next/font/google";
 import Header from "~/components/Header";
-import { TRPCReactProvider } from "../trpc/react";
-import { SessionProvider } from "next-auth/react";
+import Sidebar from "~/components/Sidebar";
+import "~/styles/globals.css";
 import { Toaster } from "../components/ui/toaster";
+import { cn } from "../lib/utils";
+import { TRPCReactProvider } from "../trpc/react";
 
-const inter = Inter({ subsets: ["latin"] });
+const fontHeading = Manrope({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-heading",
+});
 
-// export const metadata: Metadata = {
-//   title: "Blinksights",
-//   description: "Blink Analytics. Insights for blinks that convert",
-// };
+const fontBody = Manrope({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-body",
+});
+
+function AuthenticatedLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
+      <Sidebar />
+      <div className="flex flex-col">
+        <Header />
+        <main className="flex w-screen flex-1 flex-col gap-4 p-4 md:w-auto lg:gap-6 lg:p-6">
+          {children}
+          <Toaster />
+        </main>
+      </div>
+    </div>
+  );
+}
+
+function UnauthenticatedLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="flex min-h-screen flex-col">
+      <Header />
+      <main className="flex flex-1 flex-col items-center justify-center">
+        {children}
+        <Toaster />
+      </main>
+    </div>
+  );
+}
+
+function LayoutWrapper({ children }: { children: React.ReactNode }) {
+  const { data: session } = useSession();
+
+  return session ? (
+    <AuthenticatedLayout>{children}</AuthenticatedLayout>
+  ) : (
+    <UnauthenticatedLayout>{children}</UnauthenticatedLayout>
+  );
+}
 
 export default function RootLayout({
   children,
@@ -22,19 +65,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body
+        className={cn("antialiased", fontHeading.variable, fontBody.variable)}
+      >
         <TRPCReactProvider>
           <SessionProvider>
-            <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
-              <Sidebar />
-              <div className="flex flex-col">
-                <Header />
-                <main className="flex w-screen flex-1 flex-col gap-4 p-4 md:w-auto lg:gap-6 lg:p-6">
-                  {children}
-                  <Toaster />
-                </main>
-              </div>
-            </div>
+            <LayoutWrapper>{children}</LayoutWrapper>
           </SessionProvider>
         </TRPCReactProvider>
       </body>
