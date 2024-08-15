@@ -49,7 +49,8 @@ export const blinkEvents = createTable("blink_event", {
   eventType: integer("event_type").notNull(),
   url: varchar("url", { length: 255 }),
   payerPubKey: varchar("payer_pub_key", { length: 255 }),
-  trackingPubKey: varchar("tracking_pub_key", { length: 255 }),
+  actionIdentityKey: varchar("action_identity_key", { length: 255 }),
+  memo: varchar("memo", { length: 255 }),
   timestamp: timestamp("created_at", { withTimezone: true })
     .default(sql`CURRENT_TIMESTAMP`)
     .notNull(),
