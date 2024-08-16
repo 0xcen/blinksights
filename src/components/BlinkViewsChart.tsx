@@ -2,25 +2,45 @@
 import { useMemo, useState } from "react";
 import { InteractiveLineChart } from "~/components/InteractiveLineChart";
 import useBlinkAnalytics from "~/hooks/useBlinkAnalytics";
+import { sortStats } from "~/lib/utils";
+import { EventType } from "~/enums/index";
 
 interface BlinkViewsChartProps {
   blinkId: string;
   timeRanges: string[];
+  eventType: EventType;
+}
+
+const mapTimeRangeToDays = (timeRange: string): number => {
+  switch (timeRange) {
+    case "24h":
+      return 1;
+    case "7d":
+      return 7;
+    case "30d":
+      return 30;
+    default:
+      return 7;
+  }
 }
 
 const BlinkViewsChart: React.FC<BlinkViewsChartProps> = ({
   blinkId,
   timeRanges,
+  eventType,
 }) => {
   const [timeRange, setTimeRange] = useState<"24h" | "7d" | "30d">(
     timeRanges[0] as "24h" | "7d" | "30d",
   );
   const analytics = useBlinkAnalytics(blinkId, timeRange);
+  const allEvents = analytics.data?.events.filter(
+    (event) => event.eventType === eventType,
+  );
 
   const viewsPerDay = useMemo(() => {
-    if (!analytics.data?.events) return [];
+    if (!allEvents) return [];
 
-    const dailyViews = analytics.data.events.reduce(
+    const dailyViews = allEvents.reduce(
       (acc, event) => {
         const date = event.timestamp.toISOString().split("T")[0] ?? "";
         if (date in acc) {
@@ -33,22 +53,41 @@ const BlinkViewsChart: React.FC<BlinkViewsChartProps> = ({
       {} as Record<string, number>,
     );
 
+    const range = mapTimeRangeToDays(timeRange);
+    const today = new Date();
+    const date = new Date(today);
+    date.setDate(today.getDate() - range);
+
+    while (date <= today) {
+      const dateString = date.toISOString().split("T")[0];
+
+      if(!dateString) continue;
+      
+      if (!(dateString in dailyViews)) {
+        dailyViews[dateString] = 0;
+      }
+      date.setDate(date.getDate() + 1);
+    }
+  
+
     return Object.entries(dailyViews)
       .map(([date, views]) => ({
         date,
         views,
       }))
       .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-  }, [analytics.data?.events]);
+  }, [allEvents]);
+
+  const label = eventType === EventType.RENDER ? "Views" : "Interactions"
 
   return (
     <InteractiveLineChart
-      title={"Views"}
+      title={label}
       description={"Your blinks have been seen a lot this week."}
       chartData={viewsPerDay}
       chartConfig={{
         views: {
-          label: "Views",
+          label: label,
           color: "hsl(var(--chart-1))",
         },
       }}

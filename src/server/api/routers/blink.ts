@@ -145,8 +145,6 @@ export const blinkRouter = createTRPCRouter({
         .from(blinkEvents)
         .where(and(...conditions));
 
-      console.log('events ::::::::: ', events);
-
       return {
         blinkId,
         events,

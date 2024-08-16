@@ -1,8 +1,7 @@
 "use client";
 import { useMemo, useState } from "react";
-import { InteractiveLineChart } from "~/components/InteractiveLineChart";
+import { InteractiveMultiLineChart } from "~/components/InteractiveMultiLineChart";
 import useAllBlinkEvents from "~/hooks/useAllBlinkEvents";
-import useBlinkAnalytics from "~/hooks/useBlinkAnalytics";
 import { sortStats } from "~/lib/utils";
 
 interface BlinkViewsChartProps {
@@ -78,29 +77,34 @@ const AllBlinkEventsChart: React.FC<BlinkViewsChartProps> = ({
       {} as Record<string, number>,
     );
   
-    const allViewsArray = Object.entries(allViews).map(([date, views]) => ({ date, views }));
-    const allInteractionsArray = Object.entries(allInteractions).map(([date, interactions]) => ({ date, interactions }));
-  
+    const allViewsArray = Object.entries(allViews).map(([date, views]) => ({
+      date,
+      views
+    })).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());  //Object.entries(allViews).map(([date, views]) => ({ date, views }));
+    const allInteractionsArray = Object.entries(allInteractions).map(([date, interactions]) => ({
+      date,
+      interactions
+    })).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()); // Object.entries(allInteractions).map(([date, interactions]) => ({ date, interactions }));
     const entries = mergeData(allViewsArray, allInteractionsArray);
-  
+
     return entries.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
   }, [analytics.data?.events]);
 
   return (
-    <InteractiveLineChart
-      title={"Views"}
+    <InteractiveMultiLineChart
+      title={"Blink Events"}
       description={"Your blinks have been seen a lot this week."}
       chartData={eventsPerDay}
-      chartConfig={[
-        {
+      chartConfig={{
+        views: {
           label: "Views",
           color: "hsl(var(--chart-1))",
         },
-        {
+        interactions: {
           label: "Interactions",
-          color: "hsl(var(--chart-2))",
+          color: "hsl(var(--chart-4))",
         },
-      ]}
+      }}
       timeRanges={timeRanges}
       currentTimeRange={timeRange}
       onTimeRangeChange={(range) => setTimeRange(range as "24h" | "7d" | "30d")}

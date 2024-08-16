@@ -150,7 +150,7 @@ export const InteractiveLineChart: React.FC<InteractiveLineChartProps> = ({
               />
               <Area
                 dataKey="views"
-                type="natural"
+                type="linear"
                 fill={`url(#fillviews)`}
                 stroke={chartConfig.views?.color}
                 stackId="a"

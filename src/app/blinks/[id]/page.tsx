@@ -7,6 +7,7 @@ import NumberCard from "../../../components/NumberCard";
 import useBlinkAnalytics from "../../../hooks/useBlinkAnalytics";
 import { BlinkEvent } from "../../../types/tableTypes";
 import { sortStats } from "../../../lib/utils";
+import { EventType } from "../../../enums/index";
 
 const inTimeRange = (date: Date, timeRange: number): boolean => {
   const today = new Date();
@@ -28,7 +29,7 @@ const Page = () => {
   const {views, interactions} = sortStats(events ?? []);
   const timeRanges = ["7d", "30d", "90d", "1y"];
 
-  const renderStats = (data: {label: string, data: BlinkEvent[]}) => {
+  const renderStats = (data: {label: string, data: BlinkEvent[]}, eventType: EventType) => {
     return (
       <div className="space-y-2">
         <div className="flex flex-wrap gap-2 md:flex-nowrap">
@@ -36,7 +37,7 @@ const Page = () => {
           <NumberCard title={`7d ${' ' + data.label}`} value={data.data.filter(item => inTimeRange(item.timestamp, 7)).length?.toString() ?? "0"} description=""/>
           <NumberCard title={`30d ${' ' + data.label}`} value={data.data.filter(item => inTimeRange(item.timestamp, 30)).length?.toString() ?? "0"} description=""/>
         </div>
-        <BlinkViewsChart blinkId={id as string} timeRanges={timeRanges} />
+        <BlinkViewsChart blinkId={id as string} timeRanges={timeRanges} eventType={eventType} />
       </div>
     );
   }
@@ -52,8 +53,8 @@ const Page = () => {
         ]}
       />
       <h1>{blink.data?.title} Blink</h1>
-      {renderStats(views)}
-      {renderStats(interactions)}
+      {renderStats(views, EventType.RENDER)}
+      {renderStats(interactions, EventType.INTERACTION)}
     </div>
   );
 };

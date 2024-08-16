@@ -8,7 +8,6 @@ import { ErrorMsg } from '~/enums/errors';
 export const extractUrlFromActionUrl = (actionUrl: string) => {
     const decodedBlinkUrl = decodeURIComponent(actionUrl);
             const splitted = decodedBlinkUrl?.split('solana-action:');
-            console.log(splitted);
             const length = splitted?.length;
             const url = splitted?.length && splitted.length > 1 ? splitted[length-1] : null;
 

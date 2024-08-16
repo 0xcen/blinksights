@@ -14,6 +14,7 @@ import useBlinks from "../hooks/useBlinks";
 import useBlinkAnalytics from "~/hooks/useBlinkAnalytics";
 import useAllBlinkEvents from "~/hooks/useAllBlinkEvents";
 import AllBlinkEventsChart from "~/components/AllBlinkEventsChart";
+import {DashboardInsights} from "~/components/DashboardInsights";
 
 const Dashboard: FC = () => {
   const { data: session } = useSession();
@@ -39,6 +40,7 @@ const Dashboard: FC = () => {
         />{" "}
       </div>
       <AllBlinkEventsChart orgId={orgId} timeRanges={["7d", "14d", "30d"]} />
+      <DashboardInsights orgId={orgId} timeRanges={["7d", "14d", "30d"]} />
     </>
   );
 };
