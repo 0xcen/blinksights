@@ -28,14 +28,19 @@ export default function Header() {
         <Link href="/">
           <Logo />
         </Link>
+        <div className="flex items-center gap-4">
+          <Link target="_blank" href="https://kopply.notion.site/Blinksights-SDK-Integration-Guide-b1cfbf885ac047e2b4ce1ce225951bf3?pvs=4">
+            <Button variant="link">Docs</Button>
+        </Link>
         <Button
           loading={status === "loading"}
           onClick={() => {
             void signIn("google");
           }}
         >
-          Login
-        </Button>
+            Login
+          </Button>
+        </div>
       </header>
     );
   }

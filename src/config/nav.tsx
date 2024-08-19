@@ -22,9 +22,9 @@ export const navLinks = [
   //   icon: <GearIcon className="h-4 w-4" />,
   //   label: "Settings",
   // },
-  // {
-  //   href: "/docs",
-  //   icon: <BookOpen className="h-4 w-4" />,
-  //   label: "Docs",
-  // },
+  {
+    href: "https://kopply.notion.site/Blinksights-SDK-Integration-Guide-b1cfbf885ac047e2b4ce1ce225951bf3?pvs=4",
+    icon: <BookOpen className="h-4 w-4" />,
+    label: "Docs",
+  },
 ];
