@@ -28,6 +28,25 @@ import Logo from "./Logo";
 export default function Header() {
   const router = useRouter();
   const { data: session, status } = useSession();
+  console.log("🚀 ~ Header ~ session:", session);
+
+  if (!session?.user) {
+    return (
+      <header className="flex h-14 w-full items-center justify-between gap-4 border-b px-4 lg:h-[60px] lg:px-6">
+        <Link href="/">
+          <Logo />
+        </Link>
+        <Button
+          loading={status === "loading"}
+          onClick={() => {
+            void signIn("google");
+          }}
+        >
+          Login
+        </Button>
+      </header>
+    );
+  }
 
   if (!session?.user) {
     return (

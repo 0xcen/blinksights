@@ -17,14 +17,14 @@ export const navLinks = [
     icon: <KeyRoundIcon className="h-4 w-4" />,
     label: "API Key",
   },
-  {
-    href: "/settings",
-    icon: <GearIcon className="h-4 w-4" />,
-    label: "Settings",
-  },
-  {
-    href: "/docs",
-    icon: <BookOpen className="h-4 w-4" />,
-    label: "Docs",
-  },
+  // {
+  //   href: "/settings",
+  //   icon: <GearIcon className="h-4 w-4" />,
+  //   label: "Settings",
+  // },
+  // {
+  //   href: "/docs",
+  //   icon: <BookOpen className="h-4 w-4" />,
+  //   label: "Docs",
+  // },
 ];

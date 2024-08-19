@@ -26,26 +26,6 @@ import {
   SelectValue,
 } from "~/components/ui/select";
 
-// const chartData = [
-//   { date: "2024-04-01", desktop: 222, mobile: 150 },
-//   { date: "2024-04-02", desktop: 97, mobile: 180 },
-//   // ... (rest of the chartData array)
-//   { date: "2024-06-30", desktop: 446, mobile: 400 },
-// ];
-
-// const chartConfig = {
-//   visitors: {
-//     label: "Visitors",
-//   },
-//   desktop: {
-//     label: "Desktop",
-//     color: "hsl(var(--chart-1))",
-//   },
-//   mobile: {
-//     label: "Mobile",
-//     color: "hsl(var(--chart-2))",
-//   },
-// } satisfies ChartConfig;
 
 interface InteractiveLineChartProps {
   title: string;
@@ -57,6 +37,8 @@ interface InteractiveLineChartProps {
       color: string;
     };
   };
+  selectDisabled: boolean;
+
   timeRanges: string[];
   currentTimeRange: string;
   onTimeRangeChange: (range: string) => void;
@@ -68,6 +50,7 @@ export const InteractiveLineChart: React.FC<InteractiveLineChartProps> = ({
   chartData,
   chartConfig,
   timeRanges,
+  selectDisabled,
   currentTimeRange,
   onTimeRangeChange,
 }) => {
@@ -93,8 +76,8 @@ export const InteractiveLineChart: React.FC<InteractiveLineChartProps> = ({
               <SelectItem value="7d" className="rounded-lg">
                 Last 7 days
               </SelectItem>
-              <SelectItem value="30d" className="rounded-lg">
-                Last 30 days
+              <SelectItem value="30d" className="rounded-lg" disabled={selectDisabled}>
+                Last 30 days {selectDisabled && <span> (Pro)</span>}
               </SelectItem>
             </SelectContent>
           </Select>
@@ -150,7 +133,7 @@ export const InteractiveLineChart: React.FC<InteractiveLineChartProps> = ({
               />
               <Area
                 dataKey="views"
-                type="natural"
+                type="linear"
                 fill={`url(#fillviews)`}
                 stroke={chartConfig.views?.color}
                 stackId="a"

@@ -10,6 +10,7 @@ import {
   uuid,
   varchar,
 } from "drizzle-orm/pg-core";
+import { Subscription } from "~/enums/index";
 
 /**
  * This is an example of how to use the multi-project schema feature of Drizzle ORM. Use the same
@@ -22,11 +23,10 @@ export const createTable = pgTableCreator((name) => `blinksights_${name}`);
 export const organizations = createTable("organization", {
   id: uuid("id")
     .primaryKey()
-    .unique()
     .default(sql`gen_random_uuid()`),
   name: varchar("name", { length: 255 }),
   apiKey: varchar("api_key", { length: 255 }),
-  subscription: varchar("subscription", { length: 255 }),
+  subscription: integer("subscription").notNull().default(Subscription.FREE),
   subscriptionStartDate: timestamp("subscription_start_date", {
     withTimezone: true,
   }),
@@ -47,9 +47,10 @@ export const blinkEvents = createTable("blink_event", {
     .notNull()
     .references(() => organizations.id, { onDelete: "cascade" }),
   eventType: integer("event_type").notNull(),
-  path: varchar("path", { length: 255 }),
-  params: varchar("params", { length: 255 }),
-  userPubKey: varchar("user_pub_key", { length: 255 }),
+  url: varchar("url", { length: 255 }),
+  payerPubKey: varchar("payer_pub_key", { length: 255 }),
+  actionIdentityKey: varchar("action_identity_key", { length: 255 }),
+  memo: varchar("memo", { length: 255 }),
   timestamp: timestamp("created_at", { withTimezone: true })
     .default(sql`CURRENT_TIMESTAMP`)
     .notNull(),
@@ -62,7 +63,12 @@ export const blinks = createTable("blink", {
   orgId: uuid("org_id")
     .notNull()
     .references(() => organizations.id, { onDelete: "cascade" }),
-  actions: jsonb("actions"),
+  actions: jsonb('actions').default(sql`'[]'::jsonb`),
+  url: varchar("url", { length: 255 }),
+  title: varchar("title", { length: 255 }),
+  description: varchar("description", { length: 255 }),
+  label: varchar("label", { length: 255 }),
+  icon: varchar("icon", { length: 1024 }),
   createdAt: timestamp("created_at", { withTimezone: true })
     .default(sql`CURRENT_TIMESTAMP`)
     .notNull(),

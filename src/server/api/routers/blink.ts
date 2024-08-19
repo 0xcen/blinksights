@@ -55,6 +55,7 @@ export const blinkRouter = createTRPCRouter({
                 id: blink.id,
                 orgId: blink.orgId,
                 createdAt: blink.createdAt.toISOString(),
+                url: blink.url,
                 ...(blink.actions as Blink),
               }) as BlinkWithOrg,
           ),
@@ -93,6 +94,7 @@ export const blinkRouter = createTRPCRouter({
       return {
         id: blink.id,
         orgId: blink.orgId,
+        url: blink.url ?? '',
         createdAt: blink.createdAt.toISOString(),
         ...(blink.actions as Blink),
       };
@@ -149,6 +151,41 @@ export const blinkRouter = createTRPCRouter({
         blinkId,
         events,
         timeRange,
+      };
+    }),
+
+    getAllEvents: publicProcedure
+    .input(
+      z.object({
+        orgId: z.string(),
+        timeRange: z.enum(["24h", "7d", "30d"]).optional().default("7d"),
+      }),
+    )
+    .query(async ({ input }) => {
+      const { orgId, timeRange } = input; 
+      const now = new Date();
+      let startDate: Date | undefined;
+
+      switch (timeRange) {
+        case "24h":
+          startDate = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+          break;
+        case "7d":
+          startDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+          break;
+        case "30d":
+          startDate = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+          break;
+      }
+
+      const events = await db
+        .select()
+        .from(blinkEvents)
+        .where(and(eq(blinkEvents.orgId, orgId), gte(blinkEvents.timestamp, startDate)))
+        .then((result) => result);
+
+      return {
+        events,
       };
     }),
 });

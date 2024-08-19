@@ -10,6 +10,7 @@ export interface Blink {
 export interface BlinkWithOrg extends Blink {
   orgId: string;
   id: string;
+  url: string;
   createdAt: string;
 }
 
