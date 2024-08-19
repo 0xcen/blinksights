@@ -2,26 +2,13 @@
 import { useMemo, useState } from "react";
 import { InteractiveLineChart } from "~/components/InteractiveLineChart";
 import useBlinkAnalytics from "~/hooks/useBlinkAnalytics";
-import { sortStats } from "~/lib/utils";
+import { sortStats, mapTimeRangeToDays } from "~/lib/utils";
 import { EventType } from "~/enums/index";
 
 interface BlinkViewsChartProps {
   blinkId: string;
   timeRanges: string[];
   eventType: EventType;
-}
-
-const mapTimeRangeToDays = (timeRange: string): number => {
-  switch (timeRange) {
-    case "24h":
-      return 1;
-    case "7d":
-      return 7;
-    case "30d":
-      return 30;
-    default:
-      return 7;
-  }
 }
 
 const BlinkViewsChart: React.FC<BlinkViewsChartProps> = ({

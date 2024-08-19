@@ -25,3 +25,16 @@ export const sortStats = (data: BlinkEvent[]) => {
 
   return {views: { label: "Views", data: views}, interactions: {label: "Interactions", data: interactions}};
 };
+
+export const mapTimeRangeToDays = (timeRange: string): number => {
+  switch (timeRange) {
+    case "24h":
+      return 1;
+    case "7d":
+      return 7;
+    case "30d":
+      return 30;
+    default:
+      return 7;
+  }
+}

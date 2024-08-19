@@ -63,7 +63,7 @@ export const InteractiveMultiLineChart: React.FC<InteractiveMultiLineChartProps>
             {description}
           </CardDescription>
         </div>
-        <Select value={currentTimeRange} onValueChange={onTimeRangeChange}>
+        {/* <Select value={currentTimeRange} onValueChange={onTimeRangeChange}>
           <SelectTrigger
             className="w-[160px] rounded-lg sm:ml-auto"
             aria-label="Select a value"
@@ -81,7 +81,7 @@ export const InteractiveMultiLineChart: React.FC<InteractiveMultiLineChartProps>
             Last 30 days
             </SelectItem>
           </SelectContent>
-        </Select>
+        </Select> */}
       </CardHeader>
       <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
         <ChartContainer
@@ -156,7 +156,7 @@ export const InteractiveMultiLineChart: React.FC<InteractiveMultiLineChartProps>
               type="linear"
               fill="url(#fillinteractions)"
               stroke={chartConfig.interactions?.color}
-              stackId="a"
+              stackId="b"
             />
             <ChartLegend content={<ChartLegendContent />} />
           </AreaChart>

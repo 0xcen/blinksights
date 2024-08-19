@@ -2,7 +2,7 @@
 import { useMemo, useState } from "react";
 import { InteractiveMultiLineChart } from "~/components/InteractiveMultiLineChart";
 import useAllBlinkEvents from "~/hooks/useAllBlinkEvents";
-import { sortStats } from "~/lib/utils";
+import { sortStats, mapTimeRangeToDays } from "~/lib/utils";
 
 interface BlinkViewsChartProps {
   orgId: string;
@@ -76,6 +76,25 @@ const AllBlinkEventsChart: React.FC<BlinkViewsChartProps> = ({
       },
       {} as Record<string, number>,
     );
+
+    const range = mapTimeRangeToDays(timeRange);
+    const today = new Date();
+    const date = new Date(today);
+    date.setDate(today.getDate() - range);
+
+    while (date <= today) {
+      const dateString = date.toISOString().split("T")[0];
+
+      if(!dateString) continue;
+      
+      if (!(dateString in allViews)) {
+        allViews[dateString] = 0;
+      }
+      if (!(dateString in allInteractions)) {
+        allInteractions[dateString] = 0;
+      }
+      date.setDate(date.getDate() + 1);
+    }
   
     const allViewsArray = Object.entries(allViews).map(([date, views]) => ({
       date,
@@ -89,6 +108,8 @@ const AllBlinkEventsChart: React.FC<BlinkViewsChartProps> = ({
 
     return entries.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
   }, [analytics.data?.events]);
+
+  
 
   return (
     <InteractiveMultiLineChart
