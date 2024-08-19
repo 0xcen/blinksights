@@ -74,6 +74,7 @@ const BlinkViewsChart: React.FC<BlinkViewsChartProps> = ({
   return (
     <InteractiveLineChart
       title={label}
+
       description={"Your blinks have been seen a lot this week."}
       chartData={viewsPerDay}
       chartConfig={{
@@ -83,6 +84,7 @@ const BlinkViewsChart: React.FC<BlinkViewsChartProps> = ({
         },
       }}
       selectDisabled={subscription === Subscription.FREE}
+
       timeRanges={timeRanges}
       currentTimeRange={timeRange}
       onTimeRangeChange={(range) => setTimeRange(range as "24h" | "7d" | "30d")}

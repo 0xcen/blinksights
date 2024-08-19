@@ -26,6 +26,7 @@ import {
   SelectValue,
 } from "~/components/ui/select";
 
+
 interface InteractiveLineChartProps {
   title: string;
   description: string;
@@ -37,6 +38,7 @@ interface InteractiveLineChartProps {
     };
   };
   selectDisabled: boolean;
+
   timeRanges: string[];
   currentTimeRange: string;
   onTimeRangeChange: (range: string) => void;

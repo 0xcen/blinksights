@@ -1,7 +1,8 @@
 "use client";
-import { CircleUser, Menu, Search } from "lucide-react";
+import { CircleUser, Menu } from "lucide-react";
 import { signIn, signOut, useSession } from "next-auth/react";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import MobileNav from "~/components/MobileNav";
 import { Button } from "~/components/ui/button";
@@ -13,20 +14,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
-import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetTrigger,
-} from "~/components/ui/sheet";
-import OnboardingDialog from "./OnboardingDialog";
-import Link from "next/link";
+import { Sheet, SheetContent, SheetTrigger } from "~/components/ui/sheet";
 import Logo from "./Logo";
+import OnboardingDialog from "./OnboardingDialog";
 
 export default function Header() {
   const router = useRouter();
   const { data: session, status } = useSession();
-  console.log("🚀 ~ Header ~ session:", session);
 
   if (!session?.user) {
     return (
