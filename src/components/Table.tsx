@@ -38,7 +38,7 @@ interface TableProps<T> {
   };
 }
 
-export function Table<T extends { id: string | number }>({
+export function Table<T extends { id: string | number, url: string | null }>({
   data,
   columns,
   actions,
@@ -78,7 +78,7 @@ export function Table<T extends { id: string | number }>({
                   >
                     {column.cell(item)}
                   </TableCell>
-                ))}
+                 ))}
                 {actions && <TableCell>{actions(item)}</TableCell>}
               </TableRow>
             ))}

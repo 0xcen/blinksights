@@ -5,15 +5,15 @@ import { Button } from "../../components/ui/button";
 
 export const columns: ColumnConfig<BlinkWithOrg>[] = [
   {
-    header: "Name",
-    accessorKey: "title",
-    cell: (product) => <div>{product.title}</div>,
+    header: "Blink Url",
+    accessorKey: "url",
+    cell: (product) => <div>{product.url}</div>,
   },
-  {
-    header: "Description",
-    accessorKey: "description",
-    cell: (product) => <div>{product.description}</div>,
-  },
+  // {
+  //   header: "Description",
+  //   accessorKey: "description",
+  //   cell: (product) => <div>{product.description}</div>,
+  // },
   {
     header: "Created At",
     accessorKey: "createdAt",

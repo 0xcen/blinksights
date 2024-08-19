@@ -55,6 +55,7 @@ export const blinkRouter = createTRPCRouter({
                 id: blink.id,
                 orgId: blink.orgId,
                 createdAt: blink.createdAt.toISOString(),
+                url: blink.url,
                 ...(blink.actions as Blink),
               }) as BlinkWithOrg,
           ),
@@ -93,6 +94,7 @@ export const blinkRouter = createTRPCRouter({
       return {
         id: blink.id,
         orgId: blink.orgId,
+        url: blink.url ?? '',
         createdAt: blink.createdAt.toISOString(),
         ...(blink.actions as Blink),
       };
