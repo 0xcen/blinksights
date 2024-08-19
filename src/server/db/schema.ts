@@ -10,6 +10,7 @@ import {
   uuid,
   varchar,
 } from "drizzle-orm/pg-core";
+import { Subscription } from "~/enums/index";
 
 /**
  * This is an example of how to use the multi-project schema feature of Drizzle ORM. Use the same
@@ -22,11 +23,10 @@ export const createTable = pgTableCreator((name) => `blinksights_${name}`);
 export const organizations = createTable("organization", {
   id: uuid("id")
     .primaryKey()
-    .unique()
     .default(sql`gen_random_uuid()`),
   name: varchar("name", { length: 255 }),
   apiKey: varchar("api_key", { length: 255 }),
-  subscription: varchar("subscription", { length: 255 }),
+  subscription: integer("subscription").notNull().default(Subscription.FREE),
   subscriptionStartDate: timestamp("subscription_start_date", {
     withTimezone: true,
   }),
