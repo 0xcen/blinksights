@@ -1,5 +1,6 @@
 import { GearIcon } from "@radix-ui/react-icons";
 import { Home, Eye, BookOpen, KeyRoundIcon } from "lucide-react";
+import { docsUrl } from "../lib/constants";
 
 export const navLinks = [
   {
@@ -23,7 +24,7 @@ export const navLinks = [
   //   label: "Settings",
   // },
   {
-    href: "https://kopply.notion.site/Blinksights-SDK-Integration-Guide-b1cfbf885ac047e2b4ce1ce225951bf3?pvs=4",
+    href: docsUrl,
     icon: <BookOpen className="h-4 w-4" />,
     label: "Docs",
   },

@@ -152,7 +152,7 @@ export const DashboardInsights: React.FC<BlinkViewsChartProps> = ({
             {renderHighlightTable(descSortedEvents.slice(0, 5), null, "Most Events", "Best performing Blinks in terms of any event type")}
             <div className="flex w-full gap-4">
                 {renderHighlightTable(descSortedInteractions, EventType.INTERACTION, "Most Interactions", "Blinks that got the most interactions") }
-                {descSortedEvents.length > 0 && renderHighlightTable(descSortedViews, EventType.RENDER, "Mostx Views", "Blinks that got the most views")}
+                {descSortedEvents.length > 0 && renderHighlightTable(descSortedViews, EventType.RENDER, "Most Views", "Blinks that got the most views")}
             </div>
         </div>
     )

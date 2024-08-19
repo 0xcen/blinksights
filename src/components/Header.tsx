@@ -17,6 +17,7 @@ import {
 import { Sheet, SheetContent, SheetTrigger } from "~/components/ui/sheet";
 import Logo from "./Logo";
 import OnboardingDialog from "./OnboardingDialog";
+import { docsUrl } from "~/lib/constants";
 
 export default function Header() {
   const router = useRouter();
@@ -29,9 +30,9 @@ export default function Header() {
           <Logo />
         </Link>
         <div className="flex items-center gap-4">
-          <Link target="_blank" href="https://kopply.notion.site/Blinksights-SDK-Integration-Guide-b1cfbf885ac047e2b4ce1ce225951bf3?pvs=4">
+          <Link target="_blank" href={docsUrl}>
             <Button variant="link">Docs</Button>
-        </Link>
+          </Link>
         <Button
           loading={status === "loading"}
           onClick={() => {
