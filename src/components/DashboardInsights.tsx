@@ -18,6 +18,7 @@ import {
 import useAllBlinkEvents from "~/hooks/useAllBlinkEvents"
 import { BlinkEvent } from "~/types/tableTypes"
 import { EventType } from "~/enums/index"
+import NoDataAvailable from "./NoDataAvailable"
 
 // TODO: refactor!!!!! (AllBlinkEventsChart)
 interface BlinkViewsChartProps {
@@ -80,7 +81,7 @@ const renderHighlightTable = (blinks: { event: BlinkEvent; eventCount: number; v
             </CardHeader>
             <CardContent>
                 <Table>
-                {renderTableHeader(headers)}
+                {renderTableHeader(headers)} 
                 <TableBody>
                     {blinks.map(({event, eventCount, interactionCount, viewCount}) => {
                         switch(type){
@@ -94,6 +95,7 @@ const renderHighlightTable = (blinks: { event: BlinkEvent; eventCount: number; v
                     })}
                 </TableBody>
                 </Table>
+                {blinks.length > 0 ? null : <NoDataAvailable />}
             </CardContent>
         </Card>
     )
@@ -149,8 +151,8 @@ export const DashboardInsights: React.FC<BlinkViewsChartProps> = ({
         <div className="grid w-full gap-6">
             {renderHighlightTable(descSortedEvents.slice(0, 5), null, "Most Events", "Best performing Blinks in terms of any event type")}
             <div className="flex w-full gap-4">
-                {renderHighlightTable(descSortedInteractions, EventType.INTERACTION, "Most Interactions", "Blinks that got the most interactions")}
-                {renderHighlightTable(descSortedViews, EventType.RENDER, "Mostx Views", "Blinks that got the most views")}
+                {renderHighlightTable(descSortedInteractions, EventType.INTERACTION, "Most Interactions", "Blinks that got the most interactions") }
+                {descSortedEvents.length > 0 && renderHighlightTable(descSortedViews, EventType.RENDER, "Mostx Views", "Blinks that got the most views")}
             </div>
         </div>
     )

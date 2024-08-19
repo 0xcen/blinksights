@@ -18,9 +18,17 @@ import {DashboardInsights} from "~/components/DashboardInsights";
 
 const Dashboard: FC = () => {
   const { data: session } = useSession();
-  if (!session?.org.id) return null;
-  const orgId = session.org.id;
-  const allEvents = useAllBlinkEvents(orgId, "7d");
+
+  let orgExists = true;
+  if (!session?.org || !session?.org.id) orgExists = false;
+  const orgId = orgExists ? session?.org.id : "";
+  
+  const allEvents = useAllBlinkEvents(orgId!, "7d");
+
+  if (!orgExists) {
+    return null;
+  }
+
   if (!allEvents.data?.events) return null;
 
   const {views, interactions} = sortStats(allEvents.data?.events);
@@ -39,8 +47,8 @@ const Dashboard: FC = () => {
           description={"Your blinks have been seen a lot this week."}
         />{" "}
       </div>
-      <AllBlinkEventsChart orgId={orgId} timeRanges={["7d", "14d", "30d"]} />
-      <DashboardInsights orgId={orgId} timeRanges={["7d", "14d", "30d"]} />
+      <AllBlinkEventsChart orgId={orgId!} timeRanges={["7d", "14d", "30d"]} />
+      <DashboardInsights orgId={orgId!} timeRanges={["7d", "14d", "30d"]} />
     </>
   );
 };

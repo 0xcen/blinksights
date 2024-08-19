@@ -4,6 +4,8 @@ import { InteractiveLineChart } from "~/components/InteractiveLineChart";
 import useBlinkAnalytics from "~/hooks/useBlinkAnalytics";
 import { sortStats, mapTimeRangeToDays } from "~/lib/utils";
 import { EventType } from "~/enums/index";
+import useOrganization from "~/hooks/useOrganization";
+import { Subscription } from "~/enums/index";
 
 interface BlinkViewsChartProps {
   blinkId: string;
@@ -20,9 +22,12 @@ const BlinkViewsChart: React.FC<BlinkViewsChartProps> = ({
     timeRanges[0] as "24h" | "7d" | "30d",
   );
   const analytics = useBlinkAnalytics(blinkId, timeRange);
-  const allEvents = analytics.data?.events.filter(
+  let allEvents = analytics.data?.events.filter(
     (event) => event.eventType === eventType,
   );
+  
+  const organization  = useOrganization();
+  const subscription = organization?.data?.subscription;
 
   const viewsPerDay = useMemo(() => {
     if (!allEvents) return [];
@@ -56,7 +61,6 @@ const BlinkViewsChart: React.FC<BlinkViewsChartProps> = ({
       date.setDate(date.getDate() + 1);
     }
   
-
     return Object.entries(dailyViews)
       .map(([date, views]) => ({
         date,
@@ -78,6 +82,7 @@ const BlinkViewsChart: React.FC<BlinkViewsChartProps> = ({
           color: "hsl(var(--chart-1))",
         },
       }}
+      selectDisabled={subscription === Subscription.FREE}
       timeRanges={timeRanges}
       currentTimeRange={timeRange}
       onTimeRangeChange={(range) => setTimeRange(range as "24h" | "7d" | "30d")}

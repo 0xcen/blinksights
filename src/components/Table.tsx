@@ -24,6 +24,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
+import NoDataAvailable from "~/components/NoDataAvailable";
 
 interface TableProps<T> {
   data: T[];
@@ -84,6 +85,7 @@ export function Table<T extends { id: string | number, url: string | null }>({
             ))}
           </TableBody>
         </UITable>
+        {data.length === 0 && <NoDataAvailable />}
       </div>
       <div className="flex flex-col items-center justify-between space-y-2 py-4 sm:flex-row sm:space-x-2 sm:space-y-0">
         <div className="text-sm text-muted-foreground">
