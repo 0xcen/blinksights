@@ -1,7 +1,8 @@
 "use client";
-import { CircleUser, Menu, Search } from "lucide-react";
+import { CircleUser, Menu } from "lucide-react";
 import { signIn, signOut, useSession } from "next-auth/react";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import MobileNav from "~/components/MobileNav";
 import { Button } from "~/components/ui/button";
@@ -13,40 +14,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
-import { Input } from "~/components/ui/input";
-import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetTrigger,
-} from "~/components/ui/sheet";
-import LoginDialog from "./LoginDialog";
-import OnboardingDialog from "./OnboardingDialog";
-import Link from "next/link";
+import { Sheet, SheetContent, SheetTrigger } from "~/components/ui/sheet";
 import Logo from "./Logo";
+import OnboardingDialog from "./OnboardingDialog";
 
 export default function Header() {
   const router = useRouter();
   const { data: session, status } = useSession();
-  console.log("🚀 ~ Header ~ session:", session);
-
-  if (!session?.user) {
-    return (
-      <header className="flex h-14 w-full items-center justify-between gap-4 border-b px-4 lg:h-[60px] lg:px-6">
-        <Link href="/">
-          <Logo />
-        </Link>
-        <Button
-          loading={status === "loading"}
-          onClick={() => {
-            void signIn("google");
-          }}
-        >
-          Login
-        </Button>
-      </header>
-    );
-  }
 
   if (!session?.user) {
     return (
