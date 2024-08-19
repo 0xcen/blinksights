@@ -44,7 +44,7 @@ const Dashboard: FC = () => {
         <NumberCard
           title={"Interactions"}
           value={interactions.data.length.toString()}
-          description={"Your blinks have been seen a lot this week."}
+          description={"Your blinks got a lot of interactions this week."}
         />{" "}
       </div>
       <AllBlinkEventsChart orgId={orgId!} timeRanges={["7d", "14d", "30d"]} />

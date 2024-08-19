@@ -13,14 +13,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
-import { Input } from "~/components/ui/input";
 import {
   Sheet,
   SheetClose,
   SheetContent,
   SheetTrigger,
 } from "~/components/ui/sheet";
-import LoginDialog from "./LoginDialog";
 import OnboardingDialog from "./OnboardingDialog";
 import Link from "next/link";
 import Logo from "./Logo";
@@ -104,9 +102,9 @@ export default function Header() {
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>My Account</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <Link href="/settings">
+            {/* <Link href="/settings">
               <DropdownMenuItem>Settings</DropdownMenuItem>
-            </Link>
+            </Link> */}
             <DropdownMenuItem>Support</DropdownMenuItem>
             <DropdownMenuSeparator />
             <Link href="/">
