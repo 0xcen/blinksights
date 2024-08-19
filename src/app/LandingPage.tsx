@@ -83,8 +83,8 @@ export default function LandingPage() {
             </div>
             <img
               src="/full-dashboard.jpg"
-              alt="Description of Image"
-              className="w-full h-auto mt-16 shadow-top"
+              alt="Screenshot of the Blinksights dashboard"
+              className="w-full h-auto mt-16 shadow-top rounded-xl"
             />
           </div>
         </div>
