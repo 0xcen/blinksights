@@ -48,6 +48,24 @@ export default function Header() {
     );
   }
 
+  if (!session?.user) {
+    return (
+      <header className="flex h-14 w-full items-center justify-between gap-4 border-b px-4 lg:h-[60px] lg:px-6">
+        <Link href="/">
+          <Logo />
+        </Link>
+        <Button
+          loading={status === "loading"}
+          onClick={() => {
+            void signIn("google");
+          }}
+        >
+          Login
+        </Button>
+      </header>
+    );
+  }
+
   return (
     <header className="flex h-14 items-center gap-4 border-b px-4 lg:h-[60px] lg:px-6">
       <Sheet>
