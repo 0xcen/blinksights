@@ -70,21 +70,21 @@ const BlinkViewsChart: React.FC<BlinkViewsChartProps> = ({
   }, [allEvents]);
 
   const label = eventType === EventType.RENDER ? "Views" : "Interactions"
+  const graphColor = eventType === EventType.RENDER ? "hsl(var(--chart-1))" : "hsl(var(--chart-2))"
 
   return (
     <InteractiveLineChart
       title={label}
-
       description={"Your blinks have been seen a lot this week."}
       chartData={viewsPerDay}
       chartConfig={{
         views: {
           label: label,
-          color: "hsl(var(--chart-1))",
+          color: graphColor,
         },
       }}
       selectDisabled={subscription === Subscription.FREE}
-
+      eventType={eventType}
       timeRanges={timeRanges}
       currentTimeRange={timeRange}
       onTimeRangeChange={(range) => setTimeRange(range as "24h" | "7d" | "30d")}

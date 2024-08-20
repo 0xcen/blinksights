@@ -25,12 +25,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
+import { EventType } from "~/enums/index";
 
 
 interface InteractiveLineChartProps {
   title: string;
   description: string;
   chartData: { date: string; views: number }[];
+
   chartConfig: {
     views: {
       label: string;
@@ -38,7 +40,7 @@ interface InteractiveLineChartProps {
     };
   };
   selectDisabled: boolean;
-
+  eventType: EventType;
   timeRanges: string[];
   currentTimeRange: string;
   onTimeRangeChange: (range: string) => void;
@@ -51,9 +53,11 @@ export const InteractiveLineChart: React.FC<InteractiveLineChartProps> = ({
   chartConfig,
   timeRanges,
   selectDisabled,
+  eventType,
   currentTimeRange,
   onTimeRangeChange,
 }) => {
+  console.log("chartConfig", chartConfig);
   return (
     <div className="space-y-4">
       <Card>
@@ -92,12 +96,24 @@ export const InteractiveLineChart: React.FC<InteractiveLineChartProps> = ({
                 <linearGradient id={`fillviews`} x1="0" y1="0" x2="0" y2="1">
                   <stop
                     offset="5%"
-                    stopColor={chartConfig.views?.color}
+                    stopColor="hsl(var(--chart-1))"
                     stopOpacity={0.8}
                   />
                   <stop
                     offset="95%"
-                    stopColor={chartConfig.views?.color}
+                    stopColor="hsl(var(--chart-1))"
+                    stopOpacity={0.1}
+                  />
+                </linearGradient>
+                <linearGradient id={`fillinteractions`} x1="0" y1="0" x2="0" y2="1">
+                  <stop
+                    offset="5%"
+                    stopColor="hsl(var(--chart-2))"
+                    stopOpacity={0.8}
+                  />
+                  <stop
+                    offset="95%"
+                    stopColor="hsl(var(--chart-2))"
                     stopOpacity={0.1}
                   />
                 </linearGradient>
@@ -134,7 +150,7 @@ export const InteractiveLineChart: React.FC<InteractiveLineChartProps> = ({
               <Area
                 dataKey="views"
                 type="linear"
-                fill={`url(#fillviews)`}
+                fill={eventType === EventType.RENDER ? `url(#fillviews)` : `url(#fillinteractions)`}
                 stroke={chartConfig.views?.color}
                 stackId="a"
               />

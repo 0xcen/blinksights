@@ -31,7 +31,6 @@ const renderRow = (path: string, eventCount: number, blinkId: string) => {
 
     return (
         <TableRow onClick={() => {
-            console.log("clicked path", path);
             router.push(`/blinks/${blinkId}`);
         }}>
             <TableCell>
@@ -106,9 +105,9 @@ const sortAndCountEvents = (events: BlinkEvent[]) => {
         let viewCount = 0;
 
         if(event.eventType === EventType.RENDER){
-            interactionCount += 1;
-        } else if (event.eventType === EventType.INTERACTION){
             viewCount += 1;
+        } else if (event.eventType === EventType.INTERACTION){
+            interactionCount += 1;
         }
 
         if (found) {
@@ -125,10 +124,9 @@ const sortAndCountEvents = (events: BlinkEvent[]) => {
         }
     });
 
-    const descSortedEvents = sortedEvents.sort((a, b) => b.eventCount - a.eventCount);
-
-    const descSortedViews = sortedEvents.sort((a, b) => b.viewCount - a.viewCount);;
-    const descSortedInteractions = sortedEvents.sort((a, b) => b.interactionCount - a.interactionCount);;
+    const descSortedEvents = [...sortedEvents].sort((a, b) => b.eventCount - a.eventCount);
+    const descSortedViews = [...sortedEvents].sort((a, b) => b.viewCount - a.viewCount);
+    const descSortedInteractions = [...sortedEvents].sort((a, b) => b.interactionCount - a.interactionCount);   
 
     return {descSortedEvents, descSortedInteractions, descSortedViews};
 }
