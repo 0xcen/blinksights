@@ -25,6 +25,7 @@ import {
   SelectValue,
 } from "./ui/select";
 import NoDataAvailable from "~/components/NoDataAvailable";
+import { useRouter } from "next/navigation"
 
 interface TableProps<T> {
   data: T[];
@@ -45,6 +46,7 @@ export function Table<T extends { id: string | number, url: string | null }>({
   actions,
   pagination,
 }: TableProps<T>) {
+  const router = useRouter();
   const { page, pageSize, total, onPageChange, onPageSizeChange } = pagination;
   const totalPages = Math.ceil(total / pageSize);
 
@@ -53,7 +55,6 @@ export function Table<T extends { id: string | number, url: string | null }>({
       <div>
         <UITable>
           <TableHeader>
-            <TableRow>
               {columns.map((column) => (
                 <TableHead
                   key={column.accessorKey as string}
@@ -67,11 +68,13 @@ export function Table<T extends { id: string | number, url: string | null }>({
                   <span className="sr-only">Actions</span>
                 </TableHead>
               )}
-            </TableRow>
           </TableHeader>
           <TableBody>
             {data.map((item) => (
-              <TableRow key={item.id}>
+              <TableRow key={item.id} onClick={() => {
+                console.log("clicked");
+                router.push(`/blinks/${item.id}`);
+              }}>
                 {columns.map((column) => (
                   <TableCell
                     key={column.accessorKey as string}

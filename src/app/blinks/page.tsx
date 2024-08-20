@@ -11,8 +11,6 @@ import {
 } from "~/components/ui/card";
 import useBlinks from "~/hooks/useBlinks";
 import { columns } from "./columns";
-import useOrganization from "~/hooks/useOrganization";
-import NoDataAvailable from "~/components/NoDataAvailable";
 
 export default function Page() {
   const [page, setPage] = useState(1);
@@ -49,7 +47,6 @@ export default function Page() {
             onPageSizeChange: handlePageSizeChange,
           }}
         />
-        
       </CardContent>
     </Card>
   );

@@ -19,16 +19,21 @@ import useAllBlinkEvents from "~/hooks/useAllBlinkEvents"
 import { BlinkEvent } from "~/types/tableTypes"
 import { EventType } from "~/enums/index"
 import NoDataAvailable from "./NoDataAvailable"
-
+import { useRouter } from "next/navigation"
 // TODO: refactor!!!!! (AllBlinkEventsChart)
 interface BlinkViewsChartProps {
     orgId: string;
     timeRanges: string[];
 }
 
-const renderRow = (path: string, eventCount: number) => {
+const renderRow = (path: string, eventCount: number, blinkId: string) => {
+    const router = useRouter();
+
     return (
-        <TableRow>
+        <TableRow onClick={() => {
+            console.log("clicked path", path);
+            router.push(`/blinks/${blinkId}`);
+        }}>
             <TableCell>
                 <div className="font-medium">{path}</div>
             </TableCell>
@@ -77,11 +82,11 @@ const renderHighlightTable = (blinks: { event: BlinkEvent; eventCount: number; v
                     {blinks.map(({event, eventCount, interactionCount, viewCount}) => {
                         switch(type){
                             case EventType.INTERACTION:
-                                return renderRow(event.url ? event.url : event.id, interactionCount);
+                                return renderRow(event.url ? event.url : event.id, interactionCount, event.blinkId);
                             case EventType.RENDER:
-                                return renderRow(event.url ? event.url : event.id, viewCount);
+                                return renderRow(event.url ? event.url : event.id, viewCount, event.blinkId);
                             default:
-                                return renderRow(event.url ? event.url : event.id, eventCount);
+                                return renderRow(event.url ? event.url : event.id, eventCount, event.blinkId);
                         }
                     })}
                 </TableBody>
