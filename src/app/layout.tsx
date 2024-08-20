@@ -8,6 +8,7 @@ import "~/styles/globals.css";
 import { Toaster } from "../components/ui/toaster";
 import { cn } from "../lib/utils";
 import { TRPCReactProvider } from "../trpc/react";
+import { Analytics } from '@vercel/analytics/react';
 
 const fontHeading = Manrope({
   subsets: ["latin"],
@@ -73,6 +74,7 @@ export default function RootLayout({
             <LayoutWrapper>{children}</LayoutWrapper>
           </SessionProvider>
         </TRPCReactProvider>
+        <Analytics />
       </body>
     </html>
   );
