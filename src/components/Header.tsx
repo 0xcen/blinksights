@@ -17,6 +17,7 @@ import {
 import { Sheet, SheetContent, SheetTrigger } from "~/components/ui/sheet";
 import Logo from "./Logo";
 import OnboardingDialog from "./OnboardingDialog";
+import { docsUrl } from "~/lib/constants";
 
 export default function Header() {
   const router = useRouter();
@@ -28,14 +29,19 @@ export default function Header() {
         <Link href="/">
           <Logo />
         </Link>
+        <div className="flex items-center gap-4">
+          <Link target="_blank" href={docsUrl}>
+            <Button variant="link">Docs</Button>
+          </Link>
         <Button
           loading={status === "loading"}
           onClick={() => {
             void signIn("google");
           }}
         >
-          Login
-        </Button>
+            Login
+          </Button>
+        </div>
       </header>
     );
   }
@@ -96,9 +102,9 @@ export default function Header() {
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>My Account</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <Link href="/settings">
+            {/* <Link href="/settings">
               <DropdownMenuItem>Settings</DropdownMenuItem>
-            </Link>
+            </Link> */}
             <DropdownMenuItem>Support</DropdownMenuItem>
             <DropdownMenuSeparator />
             <Link href="/">

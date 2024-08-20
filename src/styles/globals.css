@@ -49,4 +49,8 @@
   h6 {
     @apply font-heading;
   }
+
+  .shadow-top {
+    box-shadow: 0 -8px 10px rgba(255, 255, 255, 0.15); /* Shadow above the element */
+  }
 }
