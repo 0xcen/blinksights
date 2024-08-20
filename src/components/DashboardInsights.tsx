@@ -46,11 +46,9 @@ const renderTableHeader = (headers: {label: string, hidden: boolean}[]) => {
 
     return (
         <TableHeader>
-            <TableRow>
-                {headers.map((header, index) => (
-                    <TableHead key={header.label} className={`${header.hidden ? "hidden xl:table-column" : ""} ${index === length - 1 ? "text-right" : ""}`}>{header.label}</TableHead>
-                ))}
-            </TableRow>
+            {headers.map((header, index) => (
+                <TableHead key={header.label} className={`${header.hidden ? "hidden xl:table-column" : ""} ${index === length - 1 ? "text-right" : ""}`}>{header.label}</TableHead>
+            ))}
         </TableHeader>
     )
 }
