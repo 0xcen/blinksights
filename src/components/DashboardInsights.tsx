@@ -60,13 +60,6 @@ const headers = [
     {label: "Event Count", hidden: false},
 ]
 
-const blinks = [
-    {path: "/assets/images/blinks/blink-1", eventCount: 100},
-    {path: "/assets/images/blinks/blink-2", eventCount: 20},
-    {path: "/assets/images/blinks/blink-3", eventCount: 213},
-    {path: "/assets/images/blinks/blink-4", eventCount: 123},
-]
-
 const renderHighlightTable = (blinks: { event: BlinkEvent; eventCount: number; viewCount: number; interactionCount: number; }[], type: EventType | null, title: string, description: string) => {
     
     return (
