@@ -52,7 +52,7 @@ const Page = () => {
           },
         ]}
       />
-      <h1>{blink.data?.title} Blink</h1>
+      <h1>{blink.data?.title ?? `Blink URL: ${blink.data?.url}`}</h1>
       {renderStats(views, EventType.RENDER)}
       {renderStats(interactions, EventType.INTERACTION)}
     </div>

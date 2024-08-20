@@ -31,8 +31,7 @@ export default function LandingPage() {
                 Insights for Blinks that convert
               </h1>
               <p className="mt-6 text-lg leading-8 text-gray-300">
-                Our analytics platform provides deep insights on your Blinks to help
-              you make data-driven decisions and drive your business forward.
+                Get deep insights on your Blinks to make data-driven decisions and drive your business forward.
               </p>
               <div className="mt-10 flex items-center justify-center gap-x-6">
               <Button

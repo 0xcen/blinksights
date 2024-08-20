@@ -19,16 +19,20 @@ import useAllBlinkEvents from "~/hooks/useAllBlinkEvents"
 import { BlinkEvent } from "~/types/tableTypes"
 import { EventType } from "~/enums/index"
 import NoDataAvailable from "./NoDataAvailable"
-
+import { useRouter } from "next/navigation"
 // TODO: refactor!!!!! (AllBlinkEventsChart)
 interface BlinkViewsChartProps {
     orgId: string;
     timeRanges: string[];
 }
 
-const renderRow = (path: string, eventCount: number) => {
+const renderRow = (path: string, eventCount: number, blinkId: string) => {
+    const router = useRouter();
+
     return (
-        <TableRow>
+        <TableRow onClick={() => {
+            router.push(`/blinks/${blinkId}`);
+        }}>
             <TableCell>
                 <div className="font-medium">{path}</div>
             </TableCell>
@@ -46,11 +50,9 @@ const renderTableHeader = (headers: {label: string, hidden: boolean}[]) => {
 
     return (
         <TableHeader>
-            <TableRow>
-                {headers.map((header, index) => (
-                    <TableHead key={header.label} className={`${header.hidden ? "hidden xl:table-column" : ""} ${index === length - 1 ? "text-right" : ""}`}>{header.label}</TableHead>
-                ))}
-            </TableRow>
+            {headers.map((header, index) => (
+                <TableHead key={header.label} className={`${header.hidden ? "hidden xl:table-column" : ""} ${index === length - 1 ? "text-right" : ""}`}>{header.label}</TableHead>
+            ))}
         </TableHeader>
     )
 }
@@ -58,13 +60,6 @@ const renderTableHeader = (headers: {label: string, hidden: boolean}[]) => {
 const headers = [
     {label: "Blink Url", hidden: false},
     {label: "Event Count", hidden: false},
-]
-
-const blinks = [
-    {path: "/assets/images/blinks/blink-1", eventCount: 100},
-    {path: "/assets/images/blinks/blink-2", eventCount: 20},
-    {path: "/assets/images/blinks/blink-3", eventCount: 213},
-    {path: "/assets/images/blinks/blink-4", eventCount: 123},
 ]
 
 const renderHighlightTable = (blinks: { event: BlinkEvent; eventCount: number; viewCount: number; interactionCount: number; }[], type: EventType | null, title: string, description: string) => {
@@ -86,11 +81,11 @@ const renderHighlightTable = (blinks: { event: BlinkEvent; eventCount: number; v
                     {blinks.map(({event, eventCount, interactionCount, viewCount}) => {
                         switch(type){
                             case EventType.INTERACTION:
-                                return renderRow(event.url ? event.url : event.id, interactionCount);
+                                return renderRow(event.url ? event.url : event.id, interactionCount, event.blinkId);
                             case EventType.RENDER:
-                                return renderRow(event.url ? event.url : event.id, viewCount);
+                                return renderRow(event.url ? event.url : event.id, viewCount, event.blinkId);
                             default:
-                                return renderRow(event.url ? event.url : event.id, eventCount);
+                                return renderRow(event.url ? event.url : event.id, eventCount, event.blinkId);
                         }
                     })}
                 </TableBody>
@@ -110,9 +105,9 @@ const sortAndCountEvents = (events: BlinkEvent[]) => {
         let viewCount = 0;
 
         if(event.eventType === EventType.RENDER){
-            interactionCount += 1;
-        } else if (event.eventType === EventType.INTERACTION){
             viewCount += 1;
+        } else if (event.eventType === EventType.INTERACTION){
+            interactionCount += 1;
         }
 
         if (found) {
@@ -129,10 +124,9 @@ const sortAndCountEvents = (events: BlinkEvent[]) => {
         }
     });
 
-    const descSortedEvents = sortedEvents.sort((a, b) => b.eventCount - a.eventCount);
-
-    const descSortedViews = sortedEvents.sort((a, b) => b.viewCount - a.viewCount);;
-    const descSortedInteractions = sortedEvents.sort((a, b) => b.interactionCount - a.interactionCount);;
+    const descSortedEvents = [...sortedEvents].sort((a, b) => b.eventCount - a.eventCount);
+    const descSortedViews = [...sortedEvents].sort((a, b) => b.viewCount - a.viewCount);
+    const descSortedInteractions = [...sortedEvents].sort((a, b) => b.interactionCount - a.interactionCount);   
 
     return {descSortedEvents, descSortedInteractions, descSortedViews};
 }

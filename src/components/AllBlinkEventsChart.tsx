@@ -123,7 +123,7 @@ const AllBlinkEventsChart: React.FC<BlinkViewsChartProps> = ({
         },
         interactions: {
           label: "Interactions",
-          color: "hsl(var(--chart-4))",
+          color: "hsl(var(--chart-2))",
         },
       }}
       timeRanges={timeRanges}
