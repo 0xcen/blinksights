@@ -10,8 +10,7 @@ on:
 jobs:
   api_call:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Make API call
-      run: |
-        curl -X GET 'https://blinksights.com/api/check'
+      - name: Make API call
+        run: |
+          curl -X GET 'https://blinksights.com/api/check'
