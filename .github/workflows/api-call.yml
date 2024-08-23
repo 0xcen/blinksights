@@ -13,4 +13,4 @@ jobs:
     steps:
       - name: Make API call
         run: |
-          curl -X GET 'https://blinksights.com/api/check'
+          curl -X GET 'https://blinksights.xyz/api/check'
