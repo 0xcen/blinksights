@@ -16,3 +16,8 @@ export type BlinkEvent = {
   memo: string | null;
   timestamp: Date;
 }
+
+export interface BlinkViewsChartProps {
+  orgId: string;
+  timeRanges: string[];
+}

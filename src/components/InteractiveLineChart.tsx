@@ -58,6 +58,20 @@ export const InteractiveLineChart: React.FC<InteractiveLineChartProps> = ({
   onTimeRangeChange,
 }) => {
   console.log("chartConfig", chartConfig);
+
+  let fill = "url(#fillviews)";
+  switch(eventType){
+    case EventType.RENDER:
+      fill = "url(#fillviews)";
+      break;
+    case EventType.INTERACTION:
+      fill = "url(#fillinteractions)";
+      break;
+    case EventType.CONFIRMED:
+      fill = "url(#fillconversions)";
+      break;
+  }
+
   return (
     <div className="space-y-4">
       <Card>
@@ -117,6 +131,18 @@ export const InteractiveLineChart: React.FC<InteractiveLineChartProps> = ({
                     stopOpacity={0.1}
                   />
                 </linearGradient>
+                <linearGradient id={`fillconversions`} x1="0" y1="0" x2="0" y2="1">
+                  <stop
+                    offset="5%"
+                    stopColor="hsl(var(--chart-3))"
+                    stopOpacity={0.8}
+                  />
+                  <stop
+                    offset="95%"
+                    stopColor="hsl(var(--chart-3))"
+                    stopOpacity={0.1}
+                  />
+                </linearGradient>
               </defs>
               <CartesianGrid vertical={false} />
               <XAxis
@@ -150,7 +176,7 @@ export const InteractiveLineChart: React.FC<InteractiveLineChartProps> = ({
               <Area
                 dataKey="views"
                 type="linear"
-                fill={eventType === EventType.RENDER ? `url(#fillviews)` : `url(#fillinteractions)`}
+                fill={fill}
                 stroke={chartConfig.views?.color}
                 stackId="a"
               />

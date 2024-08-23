@@ -2,18 +2,18 @@
 import { useMemo, useState } from "react";
 import { InteractiveLineChart } from "~/components/InteractiveLineChart";
 import useBlinkAnalytics from "~/hooks/useBlinkAnalytics";
-import { sortStats, mapTimeRangeToDays } from "~/lib/utils";
+import { mapTimeRangeToDays } from "~/lib/utils";
 import { EventType } from "~/enums/index";
 import useOrganization from "~/hooks/useOrganization";
 import { Subscription } from "~/enums/index";
 
-interface BlinkViewsChartProps {
+interface TypedBlinkViewsChartProps {
   blinkId: string;
   timeRanges: string[];
   eventType: EventType;
 }
 
-const BlinkViewsChart: React.FC<BlinkViewsChartProps> = ({
+const BlinkViewsChart: React.FC<TypedBlinkViewsChartProps> = ({
   blinkId,
   timeRanges,
   eventType,
@@ -69,8 +69,23 @@ const BlinkViewsChart: React.FC<BlinkViewsChartProps> = ({
       .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
   }, [allEvents]);
 
-  const label = eventType === EventType.RENDER ? "Views" : "Interactions"
-  const graphColor = eventType === EventType.RENDER ? "hsl(var(--chart-1))" : "hsl(var(--chart-2))"
+  let label = "Views";
+  let graphColor = "hsl(var(--chart-1))";
+  
+  switch(eventType){
+    case EventType.RENDER:
+      graphColor = "hsl(var(--chart-1))";
+      label = "Views";
+      break;
+    case EventType.INTERACTION:
+      graphColor = "hsl(var(--chart-2))";
+      label = "Interactions";
+      break;
+    case EventType.CONFIRMED:
+      graphColor = "hsl(var(--chart-3))";
+      label = "Conversions";
+      break;
+  }
 
   return (
     <InteractiveLineChart

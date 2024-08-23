@@ -3,21 +3,18 @@ import { useMemo, useState } from "react";
 import { InteractiveMultiLineChart } from "~/components/InteractiveMultiLineChart";
 import useAllBlinkEvents from "~/hooks/useAllBlinkEvents";
 import { sortStats, mapTimeRangeToDays } from "~/lib/utils";
-
-interface BlinkViewsChartProps {
-  orgId: string;
-  timeRanges: string[];
-}
+import { BlinkViewsChartProps } from "~/types/tableTypes";
 
 const mergeData = (
   viewsArray: { date: string; views: number }[],
-  interactionsArray: { date: string; interactions: number }[]
+  interactionsArray: { date: string; interactions: number }[],
+  confirmationsArray: { date: string; confirmations: number }[]
 ) => {
-  const map = new Map<string, { views: number; interactions: number }>();
+  const map = new Map<string, { views: number; interactions: number; confirmations: number }>();
 
   viewsArray.forEach(({ date, views }) => {
     if (!map.has(date)) {
-      map.set(date, { views, interactions: 0 });
+      map.set(date, { views, interactions: 0, confirmations: 0 });
     } else {
       map.get(date)!.views = views;
     }
@@ -25,16 +22,25 @@ const mergeData = (
 
   interactionsArray.forEach(({ date, interactions }) => {
     if (!map.has(date)) {
-      map.set(date, { views: 0, interactions });
+      map.set(date, { views: 0, interactions, confirmations: 0 });
     } else {
       map.get(date)!.interactions = interactions;
     }
   });
 
-  return Array.from(map, ([date, { views, interactions }]) => ({
+  confirmationsArray.forEach(({ date, confirmations }) => {
+    if (!map.has(date)) {
+      map.set(date, { views: 0, interactions: 0, confirmations });
+    } else {
+      map.get(date)!.confirmations = confirmations;
+    }
+    });
+
+  return Array.from(map, ([date, { views, interactions, confirmations }]) => ({
     date,
     views,
     interactions,
+    confirmations
   }));
 };
 
@@ -46,7 +52,7 @@ const AllBlinkEventsChart: React.FC<BlinkViewsChartProps> = ({
     timeRanges[0] as "24h" | "7d" | "30d",
   );
   const analytics = useAllBlinkEvents(orgId, timeRange);
-  const {views, interactions} = sortStats(analytics.data?.events ?? []);
+  const {views, interactions, confirmations} = sortStats(analytics.data?.events ?? []);
 
   const eventsPerDay = useMemo(() => {
     if (!analytics.data?.events) return [];
@@ -77,6 +83,19 @@ const AllBlinkEventsChart: React.FC<BlinkViewsChartProps> = ({
       {} as Record<string, number>,
     );
 
+    const allConfirmations = confirmations.data.reduce(
+      (acc, event) => {
+        const date = event.timestamp.toISOString().split("T")[0] ?? "";
+        if (date in acc) {
+          acc[date]! += 1;
+        } else {
+          acc[date] = 1;
+        }
+        return acc;
+      },
+      {} as Record<string, number>,
+    );
+
     const range = mapTimeRangeToDays(timeRange);
     const today = new Date();
     const date = new Date(today);
@@ -93,6 +112,9 @@ const AllBlinkEventsChart: React.FC<BlinkViewsChartProps> = ({
       if (!(dateString in allInteractions)) {
         allInteractions[dateString] = 0;
       }
+      if (!(dateString in allConfirmations)) {
+        allConfirmations[dateString] = 0;
+      }
       date.setDate(date.getDate() + 1);
     }
   
@@ -104,7 +126,11 @@ const AllBlinkEventsChart: React.FC<BlinkViewsChartProps> = ({
       date,
       interactions
     })).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()); // Object.entries(allInteractions).map(([date, interactions]) => ({ date, interactions }));
-    const entries = mergeData(allViewsArray, allInteractionsArray);
+    const allConfirmationsArray = Object.entries(allConfirmations).map(([date, confirmations]) => ({
+      date,
+      confirmations
+    })).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()); // Object.entries(allInteractions).map(([date, interactions]) => ({ date, interactions }));
+    const entries = mergeData(allViewsArray, allInteractionsArray, allConfirmationsArray);
 
     return entries.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
   }, [analytics.data?.events]);
@@ -124,6 +150,10 @@ const AllBlinkEventsChart: React.FC<BlinkViewsChartProps> = ({
         interactions: {
           label: "Interactions",
           color: "hsl(var(--chart-2))",
+        },
+        confirmations: {
+          label: "Confirmations",
+          color: "hsl(var(--chart-3))",
         },
       }}
       timeRanges={timeRanges}

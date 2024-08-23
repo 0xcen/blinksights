@@ -1,5 +1,5 @@
 import { Button } from "~/components/ui/button";
-import { signIn, signOut, useSession } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 
 export default function LandingPage() {
   const { data: session, status } = useSession();

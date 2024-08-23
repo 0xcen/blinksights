@@ -18,18 +18,11 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "~/components/ui/chart"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "~/components/ui/select"
 
 interface InteractiveMultiLineChartProps {
     title: string;
     description: string;
-    chartData: { date: string; views: number, interactions: number }[];
+    chartData: { date: string; views: number, interactions: number, confirmations: number }[];
     chartConfig: {
       views: {
         label: string;
@@ -38,7 +31,11 @@ interface InteractiveMultiLineChartProps {
       interactions: {
         label: string;
         color: string;
-      };
+      },
+      confirmations: {
+        label: string;
+        color: string;
+      },
     };
     timeRanges: string[];
     currentTimeRange: string;
@@ -89,32 +86,6 @@ export const InteractiveMultiLineChart: React.FC<InteractiveMultiLineChartProps>
           className="aspect-auto h-[250px] w-full"
         >
           <AreaChart data={chartData}>
-            <defs>
-              <linearGradient id="fillDesktop" x1="0" y1="0" x2="0" y2="1">
-                <stop
-                  offset="5%"
-                  stopColor={chartConfig.views?.color}
-                  stopOpacity={0.8}
-                />
-                <stop
-                  offset="95%"
-                  stopColor={chartConfig.views?.color}
-                  stopOpacity={0.1}
-                />
-              </linearGradient>
-              <linearGradient id="fillMobile" x1="0" y1="0" x2="0" y2="1">
-                <stop
-                  offset="5%"
-                  stopColor={chartConfig.interactions?.color}
-                  stopOpacity={0.8}
-                />
-                <stop
-                  offset="95%"
-                  stopColor={chartConfig.interactions?.color}
-                  stopOpacity={0.1}
-                />
-              </linearGradient>
-            </defs>
             <CartesianGrid vertical={false} />
             <XAxis
               dataKey="date"
@@ -157,6 +128,13 @@ export const InteractiveMultiLineChart: React.FC<InteractiveMultiLineChartProps>
               fill="url(#fillinteractions)"
               stroke={chartConfig.interactions?.color}
               stackId="b"
+            />
+            <Area
+              dataKey="confirmations"
+              type="linear"
+              fill="url(#fillconfirmations)"
+              stroke={chartConfig.confirmations?.color}
+              stackId="c"
             />
             <ChartLegend content={<ChartLegendContent />} />
           </AreaChart>

@@ -20,11 +20,7 @@ import { BlinkEvent } from "~/types/tableTypes"
 import { EventType } from "~/enums/index"
 import NoDataAvailable from "./NoDataAvailable"
 import { useRouter } from "next/navigation"
-// TODO: refactor!!!!! (AllBlinkEventsChart)
-interface BlinkViewsChartProps {
-    orgId: string;
-    timeRanges: string[];
-}
+import { BlinkViewsChartProps } from "~/types/tableTypes"
 
 const renderRow = (path: string, eventCount: number, blinkId: string) => {
     const router = useRouter();
@@ -62,7 +58,7 @@ const headers = [
     {label: "Event Count", hidden: false},
 ]
 
-const renderHighlightTable = (blinks: { event: BlinkEvent; eventCount: number; viewCount: number; interactionCount: number; }[], type: EventType | null, title: string, description: string) => {
+const renderHighlightTable = (blinks: { event: BlinkEvent; eventCount: number; viewCount: number; interactionCount: number; confirmationsCount: number;  }[], type: EventType | null, title: string, description: string) => {
     
     return (
         <Card className="w-full">
@@ -78,12 +74,14 @@ const renderHighlightTable = (blinks: { event: BlinkEvent; eventCount: number; v
                 <Table>
                 {renderTableHeader(headers)} 
                 <TableBody>
-                    {blinks.map(({event, eventCount, interactionCount, viewCount}) => {
+                    {blinks.map(({event, eventCount, interactionCount, viewCount, confirmationsCount}) => {
                         switch(type){
                             case EventType.INTERACTION:
                                 return renderRow(event.url ? event.url : event.id, interactionCount, event.blinkId);
                             case EventType.RENDER:
                                 return renderRow(event.url ? event.url : event.id, viewCount, event.blinkId);
+                            case EventType.CONFIRMED:
+                                return renderRow(event.url ? event.url : event.id, confirmationsCount, event.blinkId);
                             default:
                                 return renderRow(event.url ? event.url : event.id, eventCount, event.blinkId);
                         }
@@ -97,38 +95,45 @@ const renderHighlightTable = (blinks: { event: BlinkEvent; eventCount: number; v
 }
 
 const sortAndCountEvents = (events: BlinkEvent[]) => {
-    const sortedEvents: { event: BlinkEvent; eventCount: number; viewCount: number; interactionCount: number; }[] = [];
+    const sortedEvents: { event: BlinkEvent; eventCount: number; viewCount: number; interactionCount: number; confirmationsCount: number; }[] = [];
 
     events.forEach((event: BlinkEvent) => {
-        const found = sortedEvents.find((e: { event: BlinkEvent; eventCount: number; viewCount: number; interactionCount: number; }) => e.event.blinkId === event.blinkId);
+        const found = sortedEvents.find((e: { event: BlinkEvent; eventCount: number; viewCount: number; interactionCount: number; confirmationsCount: number; }) => e.event.blinkId === event.blinkId);
         let interactionCount = 0;
         let viewCount = 0;
+        let confirmationsCount = 0;
 
         if(event.eventType === EventType.RENDER){
             viewCount += 1;
         } else if (event.eventType === EventType.INTERACTION){
             interactionCount += 1;
+        } else if (event.eventType === EventType.CONFIRMED){
+            confirmationsCount += 1;
         }
 
         if (found) {
             found.eventCount += 1;
             found.viewCount += viewCount;
             found.interactionCount += interactionCount;
-
+            found.confirmationsCount += confirmationsCount;
             if (event.url){
                 found.event.url = event.url;
             }
         } else {
             
-            sortedEvents.push({event, eventCount: 1, viewCount, interactionCount});
+            sortedEvents.push({event, eventCount: 1, viewCount, interactionCount, confirmationsCount});
         }
+        console.log('confirmationsCount', confirmationsCount);
     });
+
+    
 
     const descSortedEvents = [...sortedEvents].sort((a, b) => b.eventCount - a.eventCount);
     const descSortedViews = [...sortedEvents].sort((a, b) => b.viewCount - a.viewCount);
-    const descSortedInteractions = [...sortedEvents].sort((a, b) => b.interactionCount - a.interactionCount);   
+    const descSortedInteractions = [...sortedEvents].sort((a, b) => b.interactionCount - a.interactionCount);
+    const descSortedConfirmations = [...sortedEvents].sort((a, b) => b.confirmationsCount - a.confirmationsCount);
 
-    return {descSortedEvents, descSortedInteractions, descSortedViews};
+    return {descSortedEvents, descSortedInteractions, descSortedViews, descSortedConfirmations};
 }
 
 export const DashboardInsights: React.FC<BlinkViewsChartProps> = ({
@@ -139,14 +144,18 @@ export const DashboardInsights: React.FC<BlinkViewsChartProps> = ({
         timeRanges[0] as "24h" | "7d" | "30d",
     );
     const analytics = useAllBlinkEvents(orgId, timeRange);
-    const {descSortedEvents, descSortedInteractions, descSortedViews} = sortAndCountEvents(analytics.data?.events || []);
+    const {descSortedEvents, descSortedInteractions, descSortedViews, descSortedConfirmations} = sortAndCountEvents(analytics.data?.events || []);
+    console.log('descSortedConfirmations', descSortedConfirmations);
 
     return (
         <div className="grid w-full gap-6">
-            {renderHighlightTable(descSortedEvents.slice(0, 5), null, "Most Events", "Best performing Blinks in terms of any event type")}
             <div className="flex w-full gap-4">
-                {renderHighlightTable(descSortedInteractions, EventType.INTERACTION, "Most Interactions", "Blinks that got the most interactions") }
-                {descSortedEvents.length > 0 && renderHighlightTable(descSortedViews, EventType.RENDER, "Most Views", "Blinks that got the most views")}
+                {renderHighlightTable(descSortedEvents.slice(0, 5), null, "Most Events", "Best performing Blinks in terms of any event type")}
+                {descSortedEvents.length > 0 && renderHighlightTable(descSortedViews.slice(0, 5), EventType.RENDER, "Most Views", "Blinks that got the most views")}
+            </div>
+            <div className="flex w-full gap-4">
+                {renderHighlightTable(descSortedInteractions.slice(0, 5), EventType.INTERACTION, "Most Interactions", "Blinks that got the most interactions") }
+                {renderHighlightTable(descSortedConfirmations.slice(0, 5), EventType.CONFIRMED, "Most Conversions", "Blinks that got the most conversions")}
             </div>
         </div>
     )

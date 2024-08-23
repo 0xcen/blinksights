@@ -8,7 +8,7 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export const sortStats = (data: BlinkEvent[]) => {
-  const {views, interactions} = data.reduce<{views: BlinkEvent[], interactions: BlinkEvent[]}>(
+  const {views, interactions, confirmations} = data.reduce<{views: BlinkEvent[], interactions: BlinkEvent[], confirmations: BlinkEvent[]}>(
     (acc, item) => {
       switch (item.eventType) {
         case EventType.RENDER:
@@ -16,14 +16,24 @@ export const sortStats = (data: BlinkEvent[]) => {
           break;
         case EventType.INTERACTION:
           acc.interactions.push(item);
+          acc.views.push(item);
+          break;
+        case EventType.CONFIRMED:
+          acc.confirmations.push(item);
+          acc.interactions.push(item);
+          acc.views.push(item);
+          break;
+        case EventType.CANCELLED:
+          acc.interactions.push(item);
+          acc.views.push(item);
           break;
       }
       return acc; // Return the accumulator
     },
-    {views: [], interactions: []} // Initialize the accumulator with two empty arrays
+    {views: [], interactions: [], confirmations: []} // Initialize the accumulator with two empty arrays
   );
 
-  return {views: { label: "Views", data: views}, interactions: {label: "Interactions", data: interactions}};
+  return {views: { label: "Views", data: views}, interactions: {label: "Interactions", data: interactions}, confirmations: {label: "Confirmations", data: confirmations}};
 };
 
 export const mapTimeRangeToDays = (timeRange: string): number => {

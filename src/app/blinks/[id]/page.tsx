@@ -26,7 +26,7 @@ const Page = () => {
 
   const events = analytics.data?.events as BlinkEvent[];
 
-  const {views, interactions} = sortStats(events ?? []);
+  const {views, interactions, confirmations} = sortStats(events ?? []);
   const timeRanges = ["7d", "30d", "90d", "1y"];
 
   const renderStats = (data: {label: string, data: BlinkEvent[]}, eventType: EventType) => {
@@ -55,6 +55,7 @@ const Page = () => {
       <h1>{blink.data?.title ?? `Blink URL: ${blink.data?.url}`}</h1>
       {renderStats(views, EventType.RENDER)}
       {renderStats(interactions, EventType.INTERACTION)}
+      {renderStats(confirmations, EventType.CONFIRMED)}
     </div>
   );
 };

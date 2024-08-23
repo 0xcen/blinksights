@@ -4,5 +4,5 @@ export enum EventType {
     CONFIRMED = 2,
     FAILED = 3,
     CANCELLED = 4,
-    PENDING = 5,
+    PENDING = 5
 }

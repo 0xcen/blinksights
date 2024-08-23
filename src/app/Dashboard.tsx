@@ -1,17 +1,8 @@
 "use client";
 import { useSession } from "next-auth/react";
 import React, { FC, PropsWithChildren } from "react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "../components/ui/card";
 import NumberCard from "../components/NumberCard";
 import { sortStats } from "../lib/utils";
-import { BlinkEvent } from "../types/tableTypes";
-import useBlinks from "../hooks/useBlinks";
-import useBlinkAnalytics from "~/hooks/useBlinkAnalytics";
 import useAllBlinkEvents from "~/hooks/useAllBlinkEvents";
 import AllBlinkEventsChart from "~/components/AllBlinkEventsChart";
 import {DashboardInsights} from "~/components/DashboardInsights";
@@ -31,7 +22,7 @@ const Dashboard: FC = () => {
 
   if (!allEvents.data?.events) return null;
 
-  const {views, interactions} = sortStats(allEvents.data?.events);
+  const {views, interactions, confirmations} = sortStats(allEvents.data?.events);
 
   return (
     <>
@@ -45,6 +36,11 @@ const Dashboard: FC = () => {
           title={"Interactions"}
           value={interactions.data.length.toString()}
           description={"Your blinks got a lot of interactions this week."}
+        />{" "}
+        <NumberCard
+          title={"Conversions"}
+          value={confirmations.data.length.toString()}
+          description={"Your blinks got a lot of conversions this week."}
         />{" "}
       </div>
       <AllBlinkEventsChart orgId={orgId!} timeRanges={["7d", "14d", "30d"]} />

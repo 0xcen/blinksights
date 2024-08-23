@@ -1,5 +1,4 @@
 "use client";
-import { Loader2 } from "lucide-react";
 import { SessionProvider, useSession } from "next-auth/react";
 import { Manrope } from "next/font/google";
 import Header from "~/components/Header";
