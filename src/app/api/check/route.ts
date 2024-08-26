@@ -14,7 +14,7 @@ const CONFIMATIONS_STATS = [
 
 async function fetchMemosForAddress(address: string) {
 
-    const connection = new Connection(`https://mainnet.helius-rpc.com/?api-key=${process.env.HELIUS_API_KEY}`); 
+    const connection = new Connection(`https://rpc.hellomoon.io/${process.env.HELLOMOON_API_KEY}`); 
 
     const sigs = await connection.getSignaturesForAddress(new PublicKey(address));
 
