@@ -3,7 +3,23 @@ import { organizations, blinks } from '~/server/db/schema';
 import { eq } from 'drizzle-orm';
 import { createHash } from 'crypto';
 import { ErrorMsg } from '~/enums/errors';
+import { LinkedAction } from '@solana/actions';
 
+export const splitIdentityKeyFromUrl = (actionUrl: string) => {
+
+    const url = new URL(actionUrl);
+    const searchParams = url.searchParams;
+    let actionIdentityKey = searchParams.get('actionId');
+
+    return {path: url.pathname, actionIdentityKey};
+}
+
+export const removeSearchParams = (url: string) => {
+       //remove search param from requestUrl
+       const link = new URL(url);
+       const path = link.pathname;
+       return path
+}
 
 export const extractUrlFromActionUrl = (actionUrl: string) => {
     const decodedBlinkUrl = decodeURIComponent(actionUrl);
@@ -12,6 +28,41 @@ export const extractUrlFromActionUrl = (actionUrl: string) => {
             const url = splitted?.length && splitted.length > 1 ? splitted[length-1] : null;
 
             return url;
+}
+
+const matchActionPath = (actionPath: string, basePath: string) => {
+    // Replace all placeholders with a regex pattern that matches any valid path segment
+    const dynamicPath = basePath.replace(/\{[^}]+\}/g, '[^/]+'); // Matches any character except '/'
+    
+    // Create a regex pattern with case insensitivity
+    const regex = new RegExp(`^${dynamicPath}$`, 'i'); // 'i' for case insensitive
+    return regex.test(actionPath);
+};
+
+export const getBlinkId = async (path: string, actionIdentifier: string) => {
+
+    const events = await db.query.blinkEvents.findMany({
+        where: (blinkEvents, {eq}) => eq(blinkEvents.actionIdentityKey, actionIdentifier)
+    });
+
+    const ids = events.map((evnet) => evnet.blinkId);
+
+    const cleanedPath = removeSearchParams(path);
+
+    const blinks = await db.query.blinks.findMany({
+        where: (blink, {inArray}) => inArray(blink.id, ids)
+    })
+
+    for(const blink of blinks){
+        const actions: LinkedAction[] = blink.actions as LinkedAction[];
+        for(const action of actions){
+            const match = matchActionPath(cleanedPath, action.href);
+            if(match){
+                return blink.id;
+            }
+        }
+    }
+
 }
 
 /**
@@ -33,10 +84,6 @@ async function getOrg(apiKey: string){
  */
 export async function getBlink(id: string){
     const result = await db.select().from(blinks).where(eq(blinks.id, id));
-
-    if(!result || result.length === 0){
-        throw new Error(ErrorMsg.REF_NOT_FOUND);
-    }
 
     return result;
 }
@@ -62,9 +109,9 @@ export async function isAuthorized(authHeader: string | null, url: string | null
         throw new Error(ErrorMsg.UNAUTHORIZED);
     }
 
-    if(url === null){
-        throw new Error(ErrorMsg.UNAUTHORIZED);
-    }
+    // if(url === null){
+    //     throw new Error(ErrorMsg.UNAUTHORIZED);
+    // }
 
     return org;
 }
@@ -91,13 +138,10 @@ export function handleError(error: any){
                 status: 401,
             });
         case ErrorMsg.REF_NOT_FOUND:
-            console.log(error);
             return new Response(JSON.stringify({ error }), {
-                
                 status: 400,
             });
         case ErrorMsg.INVALID_FIELD:
-            console.log(error);
             return new Response(JSON.stringify({ error }), {
                 status: 400,
             });

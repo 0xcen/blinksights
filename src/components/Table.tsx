@@ -72,7 +72,6 @@ export function Table<T extends { id: string | number, url: string | null }>({
           <TableBody>
             {data.map((item) => (
               <TableRow key={item.id} onClick={() => {
-                console.log("clicked");
                 router.push(`/blinks/${item.id}`);
               }}>
                 {columns.map((column) => (

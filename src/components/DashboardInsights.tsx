@@ -123,7 +123,6 @@ const sortAndCountEvents = (events: BlinkEvent[]) => {
             
             sortedEvents.push({event, eventCount: 1, viewCount, interactionCount, confirmationsCount});
         }
-        console.log('confirmationsCount', confirmationsCount);
     });
 
     
@@ -145,7 +144,6 @@ export const DashboardInsights: React.FC<BlinkViewsChartProps> = ({
     );
     const analytics = useAllBlinkEvents(orgId, timeRange);
     const {descSortedEvents, descSortedInteractions, descSortedViews, descSortedConfirmations} = sortAndCountEvents(analytics.data?.events || []);
-    console.log('descSortedConfirmations', descSortedConfirmations);
 
     return (
         <div className="grid w-full gap-6">

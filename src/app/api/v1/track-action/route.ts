@@ -35,6 +35,7 @@ export const POST = async (
             const { blinkUrl, payerPubKey, requestUrl } = body;
 
             const url = extractUrlFromActionUrl(blinkUrl);
+            
 
             const org = await isAuthorized(authHeader, url!);
 

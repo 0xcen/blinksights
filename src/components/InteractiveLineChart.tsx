@@ -57,7 +57,6 @@ export const InteractiveLineChart: React.FC<InteractiveLineChartProps> = ({
   currentTimeRange,
   onTimeRangeChange,
 }) => {
-  console.log("chartConfig", chartConfig);
 
   let fill = "url(#fillviews)";
   switch(eventType){
