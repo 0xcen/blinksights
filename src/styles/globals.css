@@ -39,6 +39,7 @@
 
   body {
     @apply font-body bg-background text-foreground;
+    padding-top: 50px;
   }
 
   h1,
