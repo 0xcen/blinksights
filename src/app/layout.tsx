@@ -58,6 +58,7 @@ function LayoutWrapper({ children }: { children: React.ReactNode }) {
   );
 }
 
+
 export default function RootLayout({
   children,
 }: {
@@ -70,7 +71,7 @@ export default function RootLayout({
       >
         <TRPCReactProvider>
           <SessionProvider>
-            <LayoutWrapper>{children}</LayoutWrapper>
+              <LayoutWrapper>{children}</LayoutWrapper>
           </SessionProvider>
         </TRPCReactProvider>
         <Analytics />
