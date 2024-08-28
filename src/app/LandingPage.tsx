@@ -28,7 +28,7 @@ export default function LandingPage() {
                 Analytics
               </div>
               <h1 className="text-4xl font-bold tracking-tight text-white sm:text-6xl">
-                Insights for Blinks that convert
+                Analytics for Blinks that convert
               </h1>
               <p className="mt-6 text-lg leading-8 text-gray-300">
                 Get deep insights on your Blinks to make data-driven decisions and drive your business forward.
