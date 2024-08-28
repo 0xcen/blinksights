@@ -18,6 +18,7 @@ import { Sheet, SheetContent, SheetTrigger } from "~/components/ui/sheet";
 import Logo from "./Logo";
 import OnboardingDialog from "./OnboardingDialog";
 import { docsUrl } from "~/lib/constants";
+import { supportEmail } from "~/lib/constants";
 
 export default function Header() {
   const router = useRouter();
@@ -105,7 +106,9 @@ export default function Header() {
             {/* <Link href="/settings">
               <DropdownMenuItem>Settings</DropdownMenuItem>
             </Link> */}
-            <DropdownMenuItem>Support</DropdownMenuItem>
+            <Link href={`mailto:${supportEmail}`}>
+              <DropdownMenuItem>Support</DropdownMenuItem>
+            </Link>
             <DropdownMenuSeparator />
             <Link href="/">
               <DropdownMenuItem onClick={() => signOut()}>
