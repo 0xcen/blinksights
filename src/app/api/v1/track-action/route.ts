@@ -35,7 +35,6 @@ export const POST = async (
             const { blinkUrl, payerPubKey, requestUrl } = body;
 
             const url = extractUrlFromActionUrl(blinkUrl);
-            
 
             const org = await isAuthorized(authHeader, url!);
 
@@ -48,6 +47,15 @@ export const POST = async (
             })
 
         }catch (error: any) {
+            console.error('Error in POST /api/v1/track-action', 
+            {
+                message: error.message,
+                stack: error.stack,
+                request: request.body,
+                requestHeaders: request.headers,
+                url: request.url,
+            });
+
             return handleError(error);
         }
 };
