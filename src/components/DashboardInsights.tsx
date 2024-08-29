@@ -29,7 +29,7 @@ const renderRow = (path: string, eventCount: number, blinkId: string) => {
         <TableRow onClick={() => {
             router.push(`/blinks/${blinkId}`);
         }}>
-            <TableCell>
+            <TableCell className="break-all">
                 <div className="font-medium">{path}</div>
             </TableCell>
             <TableCell>
@@ -61,18 +61,18 @@ const headers = [
 const renderHighlightTable = (blinks: { event: BlinkEvent; eventCount: number; viewCount: number; interactionCount: number; confirmationsCount: number;  }[], type: EventType | null, title: string, description: string) => {
     
     return (
-        <Card className="w-full">
-            <CardHeader className="flex flex-row items-center">
+        <Card className="s">
+            {/* <CardHeader className="flex flex-row items-center">
                 <div className="grid gap-2">
                 <CardTitle>{title}</CardTitle>
                 <CardDescription>
                     {description}
                 </CardDescription>
                 </div>
-            </CardHeader>
+            </CardHeader> */}
             <CardContent>
                 <Table>
-                {renderTableHeader(headers)} 
+                {/* {renderTableHeader(headers)}  */}
                 <TableBody>
                     {blinks.map(({event, eventCount, interactionCount, viewCount, confirmationsCount}) => {
                         switch(type){
@@ -125,8 +125,6 @@ const sortAndCountEvents = (events: BlinkEvent[]) => {
         }
     });
 
-    
-
     const descSortedEvents = [...sortedEvents].sort((a, b) => b.eventCount - a.eventCount);
     const descSortedViews = [...sortedEvents].sort((a, b) => b.viewCount - a.viewCount);
     const descSortedInteractions = [...sortedEvents].sort((a, b) => b.interactionCount - a.interactionCount);
@@ -147,11 +145,11 @@ export const DashboardInsights: React.FC<BlinkViewsChartProps> = ({
 
     return (
         <div className="grid w-full gap-6">
-            <div className="flex w-full gap-4">
+            <div className="grid lg:grid-cols-2 sm:grid-cols-1 gap-4">
                 {renderHighlightTable(descSortedEvents.slice(0, 5), null, "Most Events", "Best performing Blinks in terms of any event type")}
                 {descSortedEvents.length > 0 && renderHighlightTable(descSortedViews.slice(0, 5), EventType.RENDER, "Most Views", "Blinks that got the most views")}
             </div>
-            <div className="flex w-full gap-4">
+            <div className="grid lg:grid-cols-2 sm:grid-cols-1 gap-4">
                 {renderHighlightTable(descSortedInteractions.slice(0, 5), EventType.INTERACTION, "Most Interactions", "Blinks that got the most interactions") }
                 {renderHighlightTable(descSortedConfirmations.slice(0, 5), EventType.CONFIRMED, "Most Conversions", "Blinks that got the most conversions")}
             </div>
