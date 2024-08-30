@@ -8,6 +8,7 @@ import { Toaster } from "../components/ui/toaster";
 import { cn } from "../lib/utils";
 import { TRPCReactProvider } from "../trpc/react";
 import { Analytics } from '@vercel/analytics/react';
+import AnnouncementBanner from "~/components/AnnouncementBanner";
 
 const fontHeading = Manrope({
   subsets: ["latin"],
@@ -71,6 +72,7 @@ export default function RootLayout({
         <TRPCReactProvider>
           <SessionProvider>
             <LayoutWrapper>{children}</LayoutWrapper>
+            <AnnouncementBanner message="We've improved the SDK! Update to version 1.0.11 now!" />
           </SessionProvider>
         </TRPCReactProvider>
         <Analytics />
