@@ -47,7 +47,8 @@ export const blinkEvents = createTable("blink_event", {
     .notNull()
     .references(() => organizations.id, { onDelete: "cascade" }),
   eventType: integer("event_type").notNull(),
-  url: varchar("url", { length: 255 }),
+  _url: varchar("_url", { length: 255 }),
+  url: varchar("url", { length: 1024 }),
   payerPubKey: varchar("payer_pub_key", { length: 255 }),
   actionIdentityKey: varchar("action_identity_key", { length: 255 }),
   memo: varchar("memo", { length: 255 }),
@@ -64,7 +65,8 @@ export const blinks = createTable("blink", {
     .notNull()
     .references(() => organizations.id, { onDelete: "cascade" }),
   actions: jsonb('actions').default(sql`'[]'::jsonb`),
-  url: varchar("url", { length: 255 }),
+  _url: varchar("_url", { length: 255 }),
+  url: varchar("url", { length: 1024 }),
   title: varchar("title", { length: 255 }),
   description: varchar("description", { length: 255 }),
   label: varchar("label", { length: 255 }),
