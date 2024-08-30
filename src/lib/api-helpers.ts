@@ -46,15 +46,14 @@ const matchActionPath = (actionPath: string, basePath: string) => {
     }
 
     // Replace all placeholders with a regex pattern that matches any valid path segment
-    const dynamicPath = basePath.replace(/\{[^}]+\}/g, '[^/]+'); // Matches any character except '/'
-    
+    const dynamicPath = path.replace(/\{[^}]+\}/g, '[^/]+'); // Matches any character except '/'
     // Create a regex pattern with case insensitivity
     const regex = new RegExp(`^${dynamicPath}$`, 'i'); // 'i' for case insensitive
     return regex.test(path);
 };
 
 export const getBlinkId = async (path: string, actionIdentifier: string) => {
-
+    
     // get all blink events for the given actionIdentityKey
     const events = await db.query.blinkEvents.findMany({
         where: (blinkEvents, {eq}) => eq(blinkEvents.actionIdentityKey, actionIdentifier)
@@ -75,6 +74,7 @@ export const getBlinkId = async (path: string, actionIdentifier: string) => {
 
     for(const blink of blinks){
         const actions: LinkedAction[] = blink.actions as LinkedAction[];
+        
         for(const action of actions){
             const match = matchActionPath(cleanedPath, action.href);
             if(match){
