@@ -13,15 +13,17 @@ import { isAuthorized, handleError, getBlinkId, splitIdentityKeyFromUrl } from '
  * @param userPubKey 
  */
 async function insertActionEvent(id: string, orgId: string, url: string, userPubKey: string | null, actionIdentityKey: string){
+    
     await db.insert(blinkEvents).values({eventType: EventType.INTERACTION, orgId, blinkId: id, url: url, payerPubKey: userPubKey, actionIdentityKey});
 }
 
 export const POST = async (
     request: NextRequest) => {
         try {
+            
             const authHeader = request.headers.get('Authorization');
             const body = await request.json();
-
+            
             const { payerPubKey, requestUrl } = body;
 
             const { actionIdentityKey, path } = splitIdentityKeyFromUrl(requestUrl);
@@ -30,9 +32,9 @@ export const POST = async (
             if(actionIdentityKey === null){
                 return handleError(new Error(ErrorMsg.REF_NOT_FOUND));
             }
-
+            
             const blinkId = await getBlinkId(path, actionIdentityKey);
-
+            
             if(!blinkId){
                 return handleError(new Error(ErrorMsg.REF_NOT_FOUND));
             }

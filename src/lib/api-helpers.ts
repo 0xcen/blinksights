@@ -15,10 +15,16 @@ export const splitIdentityKeyFromUrl = (actionUrl: string) => {
 }
 
 export const removeSearchParams = (url: string) => {
-       //remove search param from requestUrl
-       const link = new URL(url);
-       const path = link.pathname;
-       return path
+
+    //remove search param from requestUrl
+    const questionMarkIndex = url.indexOf('?'); 
+
+    // const path = link.pathname;
+    if (questionMarkIndex === -1) {
+        return url;
+    }
+
+    return url.substring(0, questionMarkIndex);
 }
 
 export const extractUrlFromActionUrl = (actionUrl: string) => {
