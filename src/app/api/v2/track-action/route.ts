@@ -20,7 +20,6 @@ async function insertActionEvent(id: string, orgId: string, url: string, userPub
 export const POST = async (
     request: NextRequest) => {
         try {
-            
             const authHeader = request.headers.get('Authorization');
             const body = await request.json();
             
@@ -28,7 +27,6 @@ export const POST = async (
 
             const { actionIdentityKey, path } = splitIdentityKeyFromUrl(requestUrl);
             const org = await isAuthorized(authHeader, null);
-
             if(actionIdentityKey === null){
                 return handleError(new Error(ErrorMsg.REF_NOT_FOUND));
             }
@@ -38,7 +36,7 @@ export const POST = async (
             if(!blinkId){
                 return handleError(new Error(ErrorMsg.REF_NOT_FOUND));
             }
-
+            
             insertActionEvent(blinkId, org[0]!.id, path, payerPubKey, actionIdentityKey);
 
             return Response.json({}, {

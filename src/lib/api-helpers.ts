@@ -37,36 +37,55 @@ export const extractUrlFromActionUrl = (actionUrl: string) => {
 }
 
 const matchActionPath = (actionPath: string, basePath: string) => {
+
+    let path = actionPath;
+    if(actionPath.includes('http')){
+        // Extract the pathname from the actionPath
+        const url = new URL(actionPath);
+        path = url.pathname;
+    }
+
     // Replace all placeholders with a regex pattern that matches any valid path segment
     const dynamicPath = basePath.replace(/\{[^}]+\}/g, '[^/]+'); // Matches any character except '/'
     
     // Create a regex pattern with case insensitivity
     const regex = new RegExp(`^${dynamicPath}$`, 'i'); // 'i' for case insensitive
-    return regex.test(actionPath);
+    return regex.test(path);
 };
 
 export const getBlinkId = async (path: string, actionIdentifier: string) => {
 
+    // get all blink events for the given actionIdentityKey
     const events = await db.query.blinkEvents.findMany({
         where: (blinkEvents, {eq}) => eq(blinkEvents.actionIdentityKey, actionIdentifier)
     });
 
+    // get all blink ids from the events
     const ids = events.map((evnet) => evnet.blinkId);
 
+    // remove search params from the path
     const cleanedPath = removeSearchParams(path);
 
+    // get all blinks from the ids
     const blinks = await db.query.blinks.findMany({
         where: (blink, {inArray}) => inArray(blink.id, ids)
     })
+
+    let idFound = false;
 
     for(const blink of blinks){
         const actions: LinkedAction[] = blink.actions as LinkedAction[];
         for(const action of actions){
             const match = matchActionPath(cleanedPath, action.href);
             if(match){
+                idFound = true;
                 return blink.id;
             }
         }
+    }
+
+    if(!idFound){
+        throw new Error('Could not find blink id for the given action. Action Url: '+path);
     }
 
 }
