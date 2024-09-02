@@ -1,0 +1,18 @@
+{
+  "icon": "http://localhost:3000/api/og/matchup?f1=${fighter1.username}&f2=${fighter2.username}",
+  "title": "hello world would win in a fight? ${fighter1.username} vs ${fighter2.username}",
+  "description": "Vote for who would win in a fight, pay to reveal what everyone else thinks. You can pay with SOL or SEND.",
+  "label": "Vote",
+  "links": {
+    "actions": [
+      {
+        "label": "Vote ${fighter1.username}",
+        "href": "http://localhost:3000?vote=1&f1=${fighter1.username}&f2=${fighter2.username}&matchId=${match.id}"
+      },
+      {
+        "label": "Vote ${fighter2.username}",
+        "href": "http://localhost:3000?vote=2&f1=${fighter1.username}&f2=${fighter2.username}&matchId=${match.id}"
+      }
+    ]
+  }
+}
