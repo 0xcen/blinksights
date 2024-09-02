@@ -47,10 +47,6 @@ export const POST = async (
             console.error('Error in POST /api/v2/track-action', 
                 {
                     message: error.message,
-                    stack: error.stack,
-                    request: request.body,
-                    requestHeaders: request.headers,
-                    url: request.url,
                 });
             return handleError(error);
         }

@@ -47,11 +47,7 @@ export const POST = async (
     }catch (error: any) {
       console.error('Error in POST /api/v2/track-transaction', 
         {
-            message: error.message,
-            stack: error.stack,
-            request: request.body,
-            requestHeaders: request.headers,
-            url: request.url,
+            message: error.message
         });
       return handleError(error);
     }

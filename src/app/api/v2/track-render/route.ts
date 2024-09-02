@@ -19,6 +19,7 @@ async function insertRenderEvent(id: string, orgId: string, action: ActionGetRes
   const result = await db.select().from(blinks).where(eq(blinks.id, id));
   let newBlink = false;
 
+  
   // If blink doesn't exist, create it
   if(!result || result.length === 0){
     newBlink = true;
@@ -58,7 +59,7 @@ export const POST = async (
         }
         
         await insertRenderEvent(hash, org[0]!.id, action, url, actionIdentityKey!); 
-
+        throw new Error('test');
         return Response.json({}, {
             status:200,
         })
@@ -66,10 +67,6 @@ export const POST = async (
       console.error('Error in POST /api/v2/track-render', 
         {
             message: error.message,
-            stack: error.stack,
-            request: request.body,
-            requestHeaders: request.headers,
-            url: request.url,
         });
       return handleError(error);
     }
