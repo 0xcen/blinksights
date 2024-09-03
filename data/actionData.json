@@ -1,17 +1,18 @@
 {
-  "icon": "http://localhost:3000/api/og/matchup?f1=${fighter1.username}&f2=${fighter2.username}",
-  "title": "hello world would win in a fight? ${fighter1.username} vs ${fighter2.username}",
-  "description": "Vote for who would win in a fight, pay to reveal what everyone else thinks. You can pay with SOL or SEND.",
+  "icon": "https://matchups.fun/api/og/debate-matchup?debateId=eb6bfe90-79ca-499c-8d36-54010e9c4284",
+  "title": "Celebrity Coins Are Strictly Bad",
+  "description": "Eric Wall vs Iggy Azalea. Who do you think will win?",
+  "type": "action",
   "label": "Vote",
   "links": {
     "actions": [
       {
-        "label": "Vote ${fighter1.username}",
-        "href": "http://localhost:3000?vote=1&f1=${fighter1.username}&f2=${fighter2.username}&matchId=${match.id}"
+        "label": "Vote Eric Wall",
+        "href": "/api/actions/debates/matchup?vote=1&debateId=eb6bfe90-79ca-499c-8d36-54010e9c4284&debater=Eric Wall&actionId=4adc9b8220e9a460c1ef4300c0f1746ec52921bc7c3a78d1b8c1e5f0857905fb"
       },
       {
-        "label": "Vote ${fighter2.username}",
-        "href": "http://localhost:3000?vote=2&f1=${fighter1.username}&f2=${fighter2.username}&matchId=${match.id}"
+        "label": "Vote Iggy Azalea",
+        "href": "/api/actions/debates/matchup?vote=2&debateId=eb6bfe90-79ca-499c-8d36-54010e9c4284&debater=Iggy Azalea&actionId=4adc9b8220e9a460c1ef4300c0f1746ec52921bc7c3a78d1b8c1e5f0857905fb"
       }
     ]
   }

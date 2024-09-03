@@ -27,16 +27,16 @@ export const POST = async (
 
             const { actionIdentityKey, path } = splitIdentityKeyFromUrl(requestUrl);
             const org = await isAuthorized(authHeader, null);
+            
             if(actionIdentityKey === null){
                 return handleError(new Error(ErrorMsg.REF_NOT_FOUND));
             }
-            
+
             const blinkId = await getBlinkId(path, actionIdentityKey);
-            
             if(!blinkId){
                 return handleError(new Error(ErrorMsg.REF_NOT_FOUND));
             }
-            
+
             insertActionEvent(blinkId, org[0]!.id, path, payerPubKey, actionIdentityKey);
 
             return Response.json({}, {

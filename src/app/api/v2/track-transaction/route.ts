@@ -27,19 +27,20 @@ export const POST = async (
         const authHeader = request.headers.get('Authorization');
         const body = await request.json();
         const { memo, payerPubKey, requestUrl } = body;
-        // const url = extractUrlFromActionUrl(blinkUrl);
-
+        
         const org = await isAuthorized(authHeader, null);
         const { path, actionIdentityKey } = splitIdentityKeyFromUrl(requestUrl);
-
+        
         // Create blink id
         // const hash = createBlinkId(url!, org[0]!.id);
         const blinkId = await getBlinkId(requestUrl, actionIdentityKey!);
+        
         if(!blinkId){
           return handleError(new Error(ErrorMsg.REF_NOT_FOUND));
         }
-
+         
         await insertActionIdentiyInfo(blinkId, org[0]!.id, path, actionIdentityKey!, memo, payerPubKey);
+        
 
         return Response.json({}, {
             status:200,

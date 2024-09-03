@@ -9,6 +9,7 @@ import { cn } from "../lib/utils";
 import { TRPCReactProvider } from "../trpc/react";
 import { Analytics } from '@vercel/analytics/react';
 import AnnouncementBanner from "~/components/AnnouncementBanner";
+import { usePathname } from "next/navigation";
 
 const fontHeading = Manrope({
   subsets: ["latin"],
@@ -69,6 +70,11 @@ function UnauthenticatedLayout({ children }: { children: React.ReactNode }) {
 
 function LayoutWrapper({ children }: { children: React.ReactNode }) {
   const { data: session } = useSession();
+  const pathname = usePathname();
+  // Exclude the test page from the layout
+  if (pathname === "/test") {
+    return <UnauthenticatedLayout>{children}</UnauthenticatedLayout>;
+  }
 
   return session ? (
     <AuthenticatedLayout>{children}</AuthenticatedLayout>

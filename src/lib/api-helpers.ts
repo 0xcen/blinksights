@@ -5,13 +5,29 @@ import { createHash } from 'crypto';
 import { ErrorMsg } from '~/enums/errors';
 import { LinkedAction } from '@solana/actions';
 
+// export const splitIdentityKeyFromUrl = (actionUrl: string) => {
+
+//     const url = new URL(actionUrl);
+//     const searchParams = url.searchParams;
+//     let actionIdentityKey = searchParams.get('actionId');
+
+//     return {path: url.pathname, actionIdentityKey};
+// }
+
 export const splitIdentityKeyFromUrl = (actionUrl: string) => {
+    let [path, queryString] = actionUrl.split('?');
+    let actionIdentityKey = null;
 
-    const url = new URL(actionUrl);
-    const searchParams = url.searchParams;
-    let actionIdentityKey = searchParams.get('actionId');
+    if (queryString) {
+        const searchParams = new URLSearchParams(queryString);
+        actionIdentityKey = searchParams.get('actionId');
+    }
 
-    return {path: url.pathname, actionIdentityKey};
+    if(path === null || path === undefined){
+        path = '';
+    }
+
+    return { actionIdentityKey, path };
 }
 
 export const removeSearchParams = (url: string) => {
