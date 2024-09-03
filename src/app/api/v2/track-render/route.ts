@@ -19,7 +19,6 @@ async function insertRenderEvent(id: string, orgId: string, action: ActionGetRes
   const result = await db.select().from(blinks).where(eq(blinks.id, id));
   let newBlink = false;
 
-  
   // If blink doesn't exist, create it
   if(!result || result.length === 0){
     newBlink = true;
@@ -45,8 +44,7 @@ export const POST = async (
         let { actionIdentityKey, path } = splitIdentityKeyFromUrl(url);
 
         let hash = '';
-        
-
+      
         if(!actionIdentityKey){
           hash = createBlinkId(path, org[0]!.id);
           actionIdentityKey = actionIdentifier;
@@ -59,7 +57,6 @@ export const POST = async (
         }
         
         await insertRenderEvent(hash, org[0]!.id, action, url, actionIdentityKey!); 
-        throw new Error('test');
         return Response.json({}, {
             status:200,
         })
