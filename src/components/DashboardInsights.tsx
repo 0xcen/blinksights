@@ -62,17 +62,17 @@ const renderHighlightTable = (blinks: { event: BlinkEvent; eventCount: number; v
     
     return (
         <Card className="s">
-            {/* <CardHeader className="flex flex-row items-center">
+            <CardHeader className="flex flex-row items-center">
                 <div className="grid gap-2">
                 <CardTitle>{title}</CardTitle>
                 <CardDescription>
                     {description}
                 </CardDescription>
                 </div>
-            </CardHeader> */}
+            </CardHeader>
             <CardContent>
                 <Table>
-                {/* {renderTableHeader(headers)}  */}
+                {renderTableHeader(headers)} 
                 <TableBody>
                     {blinks.map(({event, eventCount, interactionCount, viewCount, confirmationsCount}) => {
                         switch(type){
