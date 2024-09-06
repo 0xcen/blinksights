@@ -11,12 +11,17 @@ import {
 } from "~/components/ui/card";
 import useBlinks from "~/hooks/useBlinks";
 import { columns } from "./columns";
+import { sortBlinksByDevAndProd } from "~/lib/utils";
+import { useDevModeStore } from "~/store/devModeStore";
+import { filterEventsByDevAndProd } from "~/lib/utils";
 
 export default function Page() {
   const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(50);
 
   const { blinks } = useBlinks({ page, pageSize });
+  const devMode = useDevModeStore((state) => state.devMode);
+  const blinksToDisplay = devMode ? blinks.data?.blinks.filter((blink) => blink.url.includes("localhost")) : blinks.data?.blinks.filter((blink) => !blink.url.includes("localhost"));
 
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
@@ -37,12 +42,12 @@ export default function Page() {
       </CardHeader>
       <CardContent className="overflow-x-auto">
         <Table
-          data={blinks?.data?.blinks ?? []}
+          data={blinksToDisplay ?? []}
           columns={columns}
           pagination={{
             page,
             pageSize,
-            total: blinks.data?.total ?? 0,
+            total: blinksToDisplay?.length ?? 0,
             onPageChange: handlePageChange,
             onPageSizeChange: handlePageSizeChange,
           }}

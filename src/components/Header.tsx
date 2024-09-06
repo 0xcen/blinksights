@@ -19,10 +19,16 @@ import Logo from "./Logo";
 import OnboardingDialog from "./OnboardingDialog";
 import { docsUrl } from "~/lib/constants";
 import { supportEmail } from "~/lib/constants";
+import { Switch } from "~/components/ui/switch";
+import { useDevModeStore } from "../store/devModeStore";
+
 
 export default function Header() {
   const router = useRouter();
   const { data: session, status } = useSession();
+  const devMode = useDevModeStore((state: { devMode: boolean }) => state.devMode);
+  const toggleDevMode = useDevModeStore((state: { toggleDevMode: () => void }) => state.toggleDevMode);
+
 
   if (!session?.user) {
     return (
@@ -71,6 +77,10 @@ export default function Header() {
             />
           </div>
         </form> */}
+      </div>
+      <div className="flex items-center space-x-2 mx-4">
+          <Switch checked={devMode} onCheckedChange={toggleDevMode} />
+          <p>Test Mode</p>
       </div>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
