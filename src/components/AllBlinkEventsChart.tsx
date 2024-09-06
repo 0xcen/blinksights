@@ -4,6 +4,9 @@ import { InteractiveMultiLineChart } from "~/components/InteractiveMultiLineChar
 import useAllBlinkEvents from "~/hooks/useAllBlinkEvents";
 import { sortStats, mapTimeRangeToDays } from "~/lib/utils";
 import { BlinkViewsChartProps } from "~/types/tableTypes";
+import useAllBlinks from "~/hooks/useAllBlinks";
+import { sortBlinksByDevAndProd, filterEventsByDevAndProd } from "~/lib/utils";
+import { useDevModeStore } from "~/store/devModeStore";
 
 const mergeData = (
   viewsArray: { date: string; views: number }[],
@@ -52,10 +55,21 @@ const AllBlinkEventsChart: React.FC<BlinkViewsChartProps> = ({
     timeRanges[0] as "24h" | "7d" | "30d",
   );
   const analytics = useAllBlinkEvents(orgId, timeRange);
-  const {views, interactions, confirmations} = sortStats(analytics.data?.events ?? []);
+
+  const devMode = useDevModeStore((state) => state.devMode);
+  const blinks = useAllBlinks(orgId);
+  const {devBlinks, prodBlinks} = sortBlinksByDevAndProd(blinks.data?.blinks || []);
+
+  
+  const filteredEvents = filterEventsByDevAndProd(devMode, analytics.data?.events ?? [], devBlinks, prodBlinks);
+
+  
+  const {views, interactions, confirmations} = sortStats(filteredEvents ?? []);
+
+  
 
   const eventsPerDay = useMemo(() => {
-    if (!analytics.data?.events) return [];
+    if (!filteredEvents) return [];
   
     const allViews = views.data.reduce(
       (acc, event) => {
@@ -133,7 +147,7 @@ const AllBlinkEventsChart: React.FC<BlinkViewsChartProps> = ({
     const entries = mergeData(allViewsArray, allInteractionsArray, allConfirmationsArray);
 
     return entries.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-  }, [analytics.data?.events]);
+  }, [filteredEvents]);
 
   
 

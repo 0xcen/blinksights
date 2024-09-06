@@ -98,7 +98,7 @@ const BlinkViewsChart: React.FC<TypedBlinkViewsChartProps> = ({
           color: graphColor,
         },
       }}
-      selectDisabled={subscription === Subscription.FREE}
+      selectDisabled={false}
       eventType={eventType}
       timeRanges={timeRanges}
       currentTimeRange={timeRange}

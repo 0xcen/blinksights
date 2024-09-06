@@ -2,6 +2,7 @@ import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
 import { BlinkEvent } from "./../types/tableTypes"
 import { EventType } from "./../enums/index"
+import { BlinkWithOrg } from "../types/actions"
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -47,4 +48,29 @@ export const mapTimeRangeToDays = (timeRange: string): number => {
     default:
       return 7;
   }
+}
+
+export const sortBlinksByDevAndProd = (blinks: BlinkWithOrg[]) => {
+  const devBlinks: BlinkWithOrg[] = [];
+  const prodBlinks: BlinkWithOrg[] = [];
+
+  blinks.forEach(blink => {
+      if (blink.url.includes("localhost")) {
+          devBlinks.push(blink);
+      } else {
+          prodBlinks.push(blink);
+      }
+  });
+
+  return { devBlinks, prodBlinks };
+}
+
+export const filterEventsByDevAndProd = (devMode: boolean, events: BlinkEvent[], devBlinks: BlinkWithOrg[], prodBlinks: BlinkWithOrg[]) => {
+  if(devMode && events){
+      return events.filter((event: BlinkEvent) => devBlinks.some(blink => blink.id === event.blinkId));
+  } else if (events){
+      return events.filter((event: BlinkEvent) => prodBlinks.some(blink => blink.id === event.blinkId));
+  }else{
+      return [];
+  } 
 }
