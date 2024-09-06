@@ -23,8 +23,6 @@ export async function GET(req: NextRequest) {
 
 
     const blinksightsAction = await client.createActionGetResponseV2(req.url, dataJson);
-    console.log('blinksightsAction ::::::: ', blinksightsAction);
-    console.log('blinksightsAction links ::::::: ', blinksightsAction.links);
 
     return NextResponse.json(blinksightsAction, {
       headers: ACTIONS_CORS_HEADERS,

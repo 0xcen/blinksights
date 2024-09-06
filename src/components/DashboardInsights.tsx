@@ -166,7 +166,6 @@ export const DashboardInsights: React.FC<BlinkViewsChartProps> = ({
     const filteredEvents = filterEventsByDevAndProd(devMode, analytics.data?.events ?? [], devBlinks, prodBlinks);
 
     const {descSortedEvents, descSortedInteractions, descSortedViews, descSortedConfirmations} = sortAndCountEvents(filteredEvents, devMode);
-    console.log("🚀 ~ descSortedEvents:", descSortedEvents)
     const blinkWithCountEvents = getBlinkWithCount(descSortedEvents, devMode, devBlinks, prodBlinks);
     const blinkWithCountViews = getBlinkWithCount(descSortedViews, devMode, devBlinks, prodBlinks);
     const blinkWithCountInteractions = getBlinkWithCount(descSortedInteractions, devMode, devBlinks, prodBlinks);

@@ -9,7 +9,6 @@ const client = new BlinksightsClient(process.env.BLINKSIGHTS_API_KEY!, "http://l
 export async function POST(req: NextRequest) {
   try {
     const { actionUrl } = await req.json();
-    console.log('actionUrl ::::::: ', actionUrl);
 
     client.trackActionV2('123-test-pubkey', actionUrl);
 
