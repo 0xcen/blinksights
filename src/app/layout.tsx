@@ -96,7 +96,6 @@ export default function RootLayout({
         <TRPCReactProvider>
           <SessionProvider>
             <LayoutWrapper>{children}</LayoutWrapper>
-            <AnnouncementBanner message="We've improved the SDK! Update to version 1.0.19 now!" />
           </SessionProvider>
         </TRPCReactProvider>
         <Analytics />
